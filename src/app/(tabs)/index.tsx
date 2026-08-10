@@ -47,6 +47,12 @@ export default function HomeScreenRedesign() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [showCheckForm, setShowCheckForm] = useState(false);
+  const [checkPoCode, setCheckPoCode] = useState("");
+  const [checkResults, setCheckResults] = useState<QualityIssue[] | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [checkError, setCheckError] = useState<string | null>(null);
+
   const [areas, setAreas] = useState<Option[]>([]);
   const [teams, setTeams] = useState<Option[]>([]);
   const [lines, setLines] = useState<Option[]>([]);
@@ -97,6 +103,31 @@ export default function HomeScreenRedesign() {
       setLines(lineOpts);
       setTeams([]);
       setFailureCategories(failureOpts);
+    }
+  }
+
+  function openCheckForm() {
+    setCheckError(null);
+    setCheckResults(null);
+    setCheckPoCode("");
+    setShowCheckForm(true);
+  }
+
+  async function handleCheck() {
+    if (!token) return;
+    if (!checkPoCode.trim()) {
+      setCheckError("Vui lòng nhập mã PO/SP");
+      return;
+    }
+    setChecking(true);
+    setCheckError(null);
+    try {
+      const results = await api.searchIssuesByPoCode(token, checkPoCode.trim());
+      setCheckResults(results);
+    } catch (e) {
+      setCheckError(e instanceof ApiError ? e.message : "Không thể tra cứu, thử lại");
+    } finally {
+      setChecking(false);
     }
   }
 
@@ -209,6 +240,7 @@ export default function HomeScreenRedesign() {
             reportedCount={reportedCount}
             inProgressCount={inProgressCount}
             onReportPress={openReportForm}
+            onCheckPress={openCheckForm}
           />
         }
         ListEmptyComponent={
@@ -365,6 +397,78 @@ export default function HomeScreenRedesign() {
           </ScrollView>
         </SafeAreaView>
       </Modal>
+
+      {/* Check Issue Modal */}
+      <Modal visible={showCheckForm} transparent animationType="slide" presentationStyle="pageSheet">
+        <SafeAreaView style={s.modalContainer}>
+          <View style={s.modalHeader}>
+            <TouchableOpacity onPress={() => setShowCheckForm(false)}>
+              <Text style={s.modalHeaderClose}>✕</Text>
+            </TouchableOpacity>
+            <Text style={s.modalHeaderTitle}>Kiểm tra sự cố</Text>
+            <View style={{ width: 24 }} />
+          </View>
+
+          <ScrollView showsVerticalScrollIndicator={false} style={s.modalContent}>
+            <FormSection label="Mã PO / Mã sản phẩm">
+              <TextInput
+                value={checkPoCode}
+                onChangeText={setCheckPoCode}
+                placeholder="VD: PO-2026-001"
+                style={s.input}
+                placeholderTextColor={colors.textMuted}
+                onSubmitEditing={handleCheck}
+                autoCapitalize="characters"
+              />
+            </FormSection>
+
+            <PressableScale
+              style={[s.primaryBtn, checking && { opacity: 0.7 }]}
+              onPress={handleCheck}
+              disabled={checking}
+            >
+              <Text style={s.primaryBtnText}>{checking ? "Đang tra cứu..." : "Tra cứu"}</Text>
+            </PressableScale>
+
+            {checkError && (
+              <View style={s.errorBanner}>
+                <Text style={s.errorText}>{checkError}</Text>
+              </View>
+            )}
+
+            {checkResults && checkResults.length === 0 && (
+              <View style={{ paddingVertical: spacing.xl, alignItems: "center" }}>
+                <Text style={s.emptyIcon}>✅</Text>
+                <Text style={s.emptyTitle}>Chưa từng ghi nhận lỗi với mã này</Text>
+              </View>
+            )}
+
+            {checkResults && checkResults.length > 0 && (
+              <View style={{ marginTop: spacing.md, marginHorizontal: -spacing.lg }}>
+                <Text style={[s.sectionTitle, { marginHorizontal: spacing.lg, marginBottom: spacing.sm }]}>
+                  Tìm thấy {checkResults.length} sự cố trước đó
+                </Text>
+                {checkResults.map((item, index) => (
+                  <IssueCard
+                    key={item.id}
+                    issueId={item.id}
+                    poCode={item.poCode}
+                    description={item.description}
+                    status={item.status}
+                    severity={item.severity}
+                    reportedAt={item.createdAt}
+                    delay={index * 30}
+                    onPress={() => {
+                      setShowCheckForm(false);
+                      router.push(`/issue/${item.id}`);
+                    }}
+                  />
+                ))}
+              </View>
+            )}
+          </ScrollView>
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -374,11 +478,13 @@ function HeaderSection({
   reportedCount,
   inProgressCount,
   onReportPress,
+  onCheckPress,
 }: {
   userName: string;
   reportedCount: number;
   inProgressCount: number;
   onReportPress: () => void;
+  onCheckPress: () => void;
 }) {
   return (
     <View style={s.header}>
@@ -399,14 +505,17 @@ function HeaderSection({
         <MetricCard label="Đang xử lý" value={inProgressCount} color="#0EA5E9" />
       </View>
 
-      <PressableScale style={s.primaryCta} onPress={onReportPress}>
-        <Text style={s.ctaIcon}>⚠️</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={s.ctaTitle}>Báo cáo vấn đề mới</Text>
-          <Text style={s.ctaSubtitle}>Giúp đội xử lý sự cố nhanh chóng</Text>
-        </View>
-        <Text style={s.ctaArrow}>→</Text>
-      </PressableScale>
+      <View style={s.ctaRow}>
+        <PressableScale style={[s.primaryCta, { flex: 1 }]} onPress={onReportPress}>
+          <Text style={s.ctaIcon}>⚠️</Text>
+          <Text style={s.ctaTitle}>Báo cáo vấn đề</Text>
+        </PressableScale>
+
+        <PressableScale style={[s.secondaryCta, { flex: 1 }]} onPress={onCheckPress}>
+          <Text style={s.ctaIconSecondary}>🔎</Text>
+          <Text style={s.ctaTitleSecondary}>Kiểm tra sự cố</Text>
+        </PressableScale>
+      </View>
 
       <Text style={s.sectionTitle}>Hoạt động gần đây</Text>
     </View>
@@ -521,22 +630,28 @@ const s = StyleSheet.create({
   },
 
   // CTA
+  ctaRow: {
+    flexDirection: "row",
+    gap: spacing.sm,
+  },
   primaryCta: {
     backgroundColor: colors.primary,
     borderRadius: radius.lg,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.md,
     paddingVertical: spacing.lg,
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.md,
+    justifyContent: "center",
+    gap: spacing.sm,
   },
   ctaIcon: {
-    fontSize: 24,
+    fontSize: 20,
   },
   ctaTitle: {
-    fontSize: typography.body.fontSize,
+    fontSize: typography.bodySmall.fontSize,
     fontWeight: "600",
     color: colors.white,
+    textAlign: "center",
   },
   ctaSubtitle: {
     fontSize: typography.bodySmall.fontSize,
@@ -546,6 +661,27 @@ const s = StyleSheet.create({
   ctaArrow: {
     fontSize: 20,
     color: colors.white,
+  },
+  secondaryCta: {
+    backgroundColor: colors.surfaceBg,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: radius.lg,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.lg,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: spacing.sm,
+  },
+  ctaIconSecondary: {
+    fontSize: 20,
+  },
+  ctaTitleSecondary: {
+    fontSize: typography.bodySmall.fontSize,
+    fontWeight: "600",
+    color: colors.primary,
+    textAlign: "center",
   },
 
   sectionTitle: {

@@ -242,7 +242,7 @@ export default function IssueDetailScreen() {
           </View>
         )}
         {canSubmit5M1E && showInvestigate && (
-          <FiveMOneEForm token={token} issueId={issue.id} onDone={load} />
+          <FiveMOneEForm token={token} issueId={issue.id} poCode={issue.poCode} onDone={load} />
         )}
 
         {issue.submissions.length > 0 && (
@@ -304,9 +304,18 @@ function Field({ label, value }: { label: string; value: string }) {
   );
 }
 
-function FiveMOneEForm({ token, issueId, onDone }: { token: string | null; issueId: string; onDone: () => Promise<void> }) {
+function FiveMOneEForm({
+  token,
+  issueId,
+  poCode,
+  onDone,
+}: {
+  token: string | null;
+  issueId: string;
+  poCode: string;
+  onDone: () => Promise<void>;
+}) {
   const { pick, uploading } = useImagePicker(token);
-  const [poCode, setPoCode] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [started, setStarted] = useState(false);
 
@@ -362,10 +371,6 @@ function FiveMOneEForm({ token, issueId, onDone }: { token: string | null; issue
   }
 
   async function handleStart() {
-    if (!poCode.trim()) {
-      setAiError("Vui lòng nhập mã PO trước khi bắt đầu");
-      return;
-    }
     setStarted(true);
     await askAi([]);
   }
@@ -396,7 +401,7 @@ function FiveMOneEForm({ token, issueId, onDone }: { token: string | null; issue
     setSubmitError(null);
     try {
       await api.submit5M1E(token, issueId, {
-        poCode: poCode.trim(),
+        poCode,
         images,
         man: man.trim(),
         machine: machine.trim(),
@@ -421,7 +426,7 @@ function FiveMOneEForm({ token, issueId, onDone }: { token: string | null; issue
       {!started && (
         <>
           <Text style={styles.formLabel}>Mã PO</Text>
-          <TextInput value={poCode} onChangeText={setPoCode} style={styles.input} placeholder="VD: PO-2026-001" />
+          <Text style={styles.fieldValue}>{poCode}</Text>
 
           <Text style={styles.formLabel}>Hình ảnh</Text>
           <ImageRow images={images} onAdd={handleAddImage} uploading={uploading} />
