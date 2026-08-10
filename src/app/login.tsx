@@ -7,25 +7,27 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Pressable,
 } from "react-native";
 import { Redirect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import Animated, { FadeInUp } from "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@/components/scaled-text";
 import { useAuth } from "@/lib/auth-context";
 import { ApiError, getServerUrl, setServerUrl } from "@/lib/api";
 import { colors } from "@/constants/colors";
 import { BrandMark } from "@/components/brand-mark";
+import { PressableScale } from "@/components/pressable-scale";
+import { spacing, radius } from "@/constants/ui-theme";
 
-// ─── DANH SÁCH 8 VAI TRÒ KIỂM THỬ NHANH (1-CHẠM) ───────────────────────────
-const DEMO_ACCOUNTS: { code: string; label: string; icon: string }[] = [
-  { code: "NV001", label: "Vận hành", icon: "👷" },
-  { code: "QA001", label: "QA", icon: "🔍" },
-  { code: "LL001", label: "Trưởng line", icon: "👔" },
-  { code: "CN001", label: "Công nghệ", icon: "⚙️" },
-  { code: "TP001", label: "Trưởng phòng", icon: "📋" },
-  { code: "BT001", label: "Bảo trì", icon: "🔧" },
-  { code: "GD001", label: "Giám đốc", icon: "🏢" },
-  { code: "ADM001", label: "Admin", icon: "🛡️" },
+// ─── DANH SÁCH 5 VAI TRÒ KIỂM THỬ NHANH (CẬP NHẬT DESIGN) ──────────────────
+const DEMO_ACCOUNTS: { code: string; label: string; description: string }[] = [
+  { code: "NV001", label: "Vận hành", description: "Nhân viên sản xuất" },
+  { code: "QA001", label: "QA", description: "Kiểm soát chất lượng" },
+  { code: "LL001", label: "Trưởng line", description: "Quản lý dây chuyền" },
+  { code: "CN001", label: "Công nghệ", description: "Hỗ trợ kỹ thuật" },
+  { code: "TP001", label: "Quản lý", description: "Trưởng phòng" },
 ];
 const DEMO_PASSWORD = "123456";
 // ─────────────────────────────────────────────────────────────────────────────
@@ -106,36 +108,54 @@ export default function LoginScreen() {
 
           {/* 1-Tap Quick Role Picker */}
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Chọn nhanh vai trò kiểm thử</Text>
+            <Text style={styles.sectionTitle}>Chọn nhanh vai trò</Text>
             <View style={styles.badgeCount}>
-              <Text style={styles.badgeCountText}>8 Roles</Text>
+              <Text style={styles.badgeCountText}>5 Roles</Text>
             </View>
           </View>
 
           <View style={styles.demoGrid}>
-            {DEMO_ACCOUNTS.map((acc) => {
+            {DEMO_ACCOUNTS.map((acc, idx) => {
               const isSelected = employeeCode === acc.code || selectedRole === acc.code;
               return (
-                <TouchableOpacity
+                <Animated.View
                   key={acc.code}
-                  style={[
-                    styles.demoPill,
-                    isSelected && styles.demoPillActive,
-                  ]}
-                  onPress={() => handleSelectRole(acc.code)}
-                  disabled={loading}
-                  activeOpacity={0.7}
+                  entering={FadeInUp.delay(idx * 50).springify()}
                 >
-                  <Text style={styles.demoPillIcon}>{acc.icon}</Text>
-                  <Text
-                    style={[
-                      styles.demoPillText,
-                      isSelected && styles.demoPillTextActive,
-                    ]}
-                  >
-                    {acc.label}
-                  </Text>
-                </TouchableOpacity>
+                  <PressableScale onPress={() => handleSelectRole(acc.code)} disabled={loading}>
+                    <View
+                      style={[
+                        styles.demoPill,
+                        isSelected && styles.demoPillActive,
+                      ]}
+                    >
+                      <View
+                        style={[
+                          styles.roleDot,
+                          isSelected && styles.roleDotActive,
+                        ]}
+                      />
+                      <View style={{ flex: 1 }}>
+                        <Text
+                          style={[
+                            styles.demoPillText,
+                            isSelected && styles.demoPillTextActive,
+                          ]}
+                        >
+                          {acc.label}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.demoPillDesc,
+                            isSelected && styles.demoPillDescActive,
+                          ]}
+                        >
+                          {acc.description}
+                        </Text>
+                      </View>
+                    </View>
+                  </PressableScale>
+                </Animated.View>
               );
             })}
           </View>
@@ -159,6 +179,7 @@ export default function LoginScreen() {
           {/* Input: Password */}
           <Text style={styles.label}>Mật khẩu</Text>
           <View style={styles.passwordWrap}>
+            <Text style={styles.inputPrefix}>🔒</Text>
             <TextInput
               value={password}
               onChangeText={setPassword}
@@ -171,11 +192,11 @@ export default function LoginScreen() {
               style={styles.eyeButton}
               onPress={() => setShowPassword((s) => !s)}
             >
-              <Text style={styles.eyeIcon}>{showPassword ? "🙈" : "👁"}</Text>
+              <Text style={styles.eyeIcon}>{showPassword ? "👁" : "👁‍🗨"}</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.hintText}>
-            Mật khẩu mặc định: <Text style={styles.hintBold}>123456</Text>
+            Demo mặc định: <Text style={styles.hintBold}>123456</Text>
           </Text>
 
           {/* Error message */}
@@ -265,37 +286,37 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 32,
-    paddingHorizontal: 16,
+    paddingVertical: spacing.xxxl,
+    paddingHorizontal: spacing.lg,
   },
   card: {
     width: "100%",
     maxWidth: 420,
     backgroundColor: "#FFFFFF",
-    borderRadius: 28,
-    padding: 28,
+    borderRadius: radius.lg,
+    padding: spacing.xxxl,
     borderWidth: 1,
     borderColor: "#E2E8F0",
     shadowColor: "#005A36",
-    shadowOpacity: 0.1,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 8,
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4,
   },
   logoWrap: {
     alignSelf: "center",
-    marginBottom: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 18,
+    marginBottom: spacing.md,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    borderRadius: radius.md,
     borderWidth: 1,
     borderColor: "#E2E8F0",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F8FAFC",
     shadowColor: "#000",
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
+    shadowOpacity: 0.03,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 1,
   },
   brandTitle: {
     fontSize: 20,
@@ -309,8 +330,8 @@ const styles = StyleSheet.create({
     color: "#005A36",
     fontWeight: "600",
     textAlign: "center",
-    marginTop: 4,
-    marginBottom: 12,
+    marginTop: spacing.xs,
+    marginBottom: spacing.md,
   },
   infoPill: {
     alignSelf: "center",
@@ -318,9 +339,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#DCFCE7",
     borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    marginBottom: 18,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    marginBottom: spacing.lg,
   },
   infoPillText: {
     fontSize: 11,
@@ -331,20 +352,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 8,
+    marginBottom: spacing.sm,
   },
   sectionTitle: {
     fontSize: 12,
     fontWeight: "700",
     color: "#475569",
     textTransform: "uppercase",
-    letterSpacing: 0.4,
+    letterSpacing: 0.5,
   },
   badgeCount: {
     backgroundColor: "#ECFDF5",
     borderRadius: 999,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
   },
   badgeCountText: {
     fontSize: 10,
@@ -352,64 +373,82 @@ const styles = StyleSheet.create({
     color: "#005A36",
   },
   demoGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 7,
+    gap: spacing.sm,
   },
   demoPill: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-    borderWidth: 1,
+    gap: spacing.md,
+    borderWidth: 1.5,
     borderColor: "#E2E8F0",
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
     backgroundColor: "#F8FAFC",
   },
   demoPillActive: {
     borderColor: "#005A36",
     backgroundColor: "#005A36",
     shadowColor: "#005A36",
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+    elevation: 2,
   },
-  demoPillIcon: {
-    fontSize: 13,
+  roleDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#CBD5E1",
+  },
+  roleDotActive: {
+    backgroundColor: "#10B981",
   },
   demoPillText: {
-    color: "#334155",
-    fontWeight: "600",
-    fontSize: 11.5,
+    color: "#0F172A",
+    fontWeight: "700",
+    fontSize: 13,
   },
   demoPillTextActive: {
     color: "#FFFFFF",
-    fontWeight: "800",
+  },
+  demoPillDesc: {
+    fontSize: 11,
+    color: "#94A3B8",
+    marginTop: spacing.xs,
+    fontWeight: "500",
+  },
+  demoPillDescActive: {
+    color: "#D1FAE5",
   },
   divider: {
     height: 1,
     backgroundColor: "#F1F5F9",
-    marginTop: 16,
-    marginBottom: 12,
+    marginTop: spacing.lg,
+    marginBottom: spacing.md,
   },
   label: {
     fontSize: 12.5,
     fontWeight: "700",
     color: "#334155",
-    marginBottom: 6,
-    marginTop: 10,
+    marginBottom: spacing.sm,
+    marginTop: spacing.lg,
   },
   input: {
     borderWidth: 1,
     borderColor: "#CBD5E1",
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingLeft: spacing.xxxl,
+    paddingVertical: spacing.md,
     fontSize: 14,
     color: "#0F172A",
     backgroundColor: "#F8FAFC",
+  },
+  inputPrefix: {
+    position: "absolute",
+    left: spacing.md,
+    fontSize: 16,
   },
   passwordWrap: {
     position: "relative",
@@ -418,41 +457,44 @@ const styles = StyleSheet.create({
   passwordInput: {
     borderWidth: 1,
     borderColor: "#CBD5E1",
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingRight: 44,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingLeft: spacing.xxxl,
+    paddingRight: spacing.xxxl,
+    paddingVertical: spacing.md,
     fontSize: 14,
     color: "#0F172A",
     backgroundColor: "#F8FAFC",
   },
   eyeButton: {
     position: "absolute",
-    right: 10,
+    right: spacing.md,
     height: "100%",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 6,
+    paddingHorizontal: spacing.sm,
   },
   eyeIcon: {
-    fontSize: 16,
+    fontSize: 14,
   },
   hintText: {
     fontSize: 11,
     color: "#64748B",
-    marginTop: 5,
+    marginTop: spacing.sm,
   },
   hintBold: {
     fontWeight: "700",
     color: "#005A36",
   },
   errorBox: {
-    marginTop: 12,
+    marginTop: spacing.lg,
     backgroundColor: "#FEF2F2",
-    borderColor: "#FCA5A5",
+    borderColor: "#FECACA",
     borderWidth: 1,
-    padding: 10,
-    borderRadius: 10,
+    borderLeftWidth: 3,
+    borderLeftColor: "#DC2626",
+    padding: spacing.md,
+    borderRadius: radius.md,
   },
   errorText: {
     color: "#B91C1C",
@@ -460,19 +502,19 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   button: {
-    marginTop: 20,
+    marginTop: spacing.xxxl,
     backgroundColor: "#005A36",
-    borderRadius: 14,
-    paddingVertical: 15,
+    borderRadius: radius.md,
+    paddingVertical: spacing.lg,
     alignItems: "center",
     shadowColor: "#005A36",
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 4,
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
   },
   buttonDisabled: {
-    opacity: 0.65,
+    opacity: 0.6,
   },
   buttonText: {
     color: "#FFFFFF",
@@ -481,14 +523,14 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   serverButton: {
-    marginTop: 16,
+    marginTop: spacing.lg,
     alignSelf: "center",
     backgroundColor: "#F1F5F9",
     borderWidth: 1,
     borderColor: "#E2E8F0",
     borderRadius: 999,
-    paddingVertical: 6,
-    paddingHorizontal: 14,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
   },
   serverButtonText: {
     fontSize: 11,
@@ -501,21 +543,21 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(15, 23, 42, 0.6)",
+    backgroundColor: "rgba(15, 23, 42, 0.5)",
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
+    padding: spacing.lg,
   },
   modalCard: {
     width: "100%",
     maxWidth: 380,
     backgroundColor: "#FFFFFF",
-    borderRadius: 20,
-    padding: 22,
+    borderRadius: radius.lg,
+    padding: spacing.xxl,
     shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowRadius: 20,
-    elevation: 10,
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 8,
   },
   modalTitle: {
     fontSize: 16,
@@ -525,30 +567,30 @@ const styles = StyleSheet.create({
   modalSub: {
     fontSize: 12,
     color: "#64748B",
-    marginTop: 4,
-    marginBottom: 14,
+    marginTop: spacing.sm,
+    marginBottom: spacing.lg,
     lineHeight: 18,
   },
   modalInput: {
     borderWidth: 1,
     borderColor: "#CBD5E1",
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    borderRadius: radius.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
     fontSize: 13.5,
     color: "#0F172A",
     backgroundColor: "#F8FAFC",
-    marginBottom: 16,
+    marginBottom: spacing.lg,
   },
   modalActions: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    gap: 10,
+    gap: spacing.md,
   },
   modalCancel: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 10,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    borderRadius: radius.sm,
   },
   modalCancelText: {
     fontSize: 13,
@@ -557,13 +599,13 @@ const styles = StyleSheet.create({
   },
   modalSave: {
     backgroundColor: "#005A36",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 10,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    borderRadius: radius.sm,
     shadowColor: "#005A36",
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 2,
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 1,
   },
   modalSaveText: {
     fontSize: 13,

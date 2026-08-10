@@ -2,12 +2,13 @@ import { useEffect, useRef } from "react";
 import { Redirect, Tabs } from "expo-router";
 import { Animated, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SymbolView } from "expo-symbols";
 import { useAuth } from "@/lib/auth-context";
 import { colors } from "@/constants/colors";
 import { spacing, radius } from "@/constants/ui-theme";
 
-// Clean icon set using Unicode symbols (can replace with proper icon library)
-function TabIcon({ name, focused }: { name: "home" | "bell" | "wrench" | "user"; focused: boolean }) {
+// Clean icon set using expo-symbols (modern system icons)
+function TabIcon({ name, focused }: { name: "home" | "notifications" | "wrench" | "person"; focused: boolean }) {
   const scale = useRef(new Animated.Value(focused ? 1 : 0.9)).current;
 
   useEffect(() => {
@@ -20,13 +21,14 @@ function TabIcon({ name, focused }: { name: "home" | "bell" | "wrench" | "user";
   }, [focused, scale]);
 
   const iconMap = {
-    home: "🏠",
-    bell: "🔔",
-    wrench: "🛠️",
-    user: "👤",
+    home: "house.fill",
+    notifications: "bell.fill",
+    wrench: "wrench.fill",
+    person: "person.fill",
   };
 
-  const icon = iconMap[name];
+  const iconName = iconMap[name];
+  const tintColor = focused ? colors.primary : colors.textMuted;
 
   return (
     <Animated.View
@@ -36,7 +38,12 @@ function TabIcon({ name, focused }: { name: "home" | "bell" | "wrench" | "user";
         justifyContent: "center",
       }}
     >
-      <Text style={{ fontSize: 22 }}>{icon}</Text>
+      <SymbolView
+        name={iconName}
+        size={24}
+        tintColor={tintColor}
+        resizeMode="scaleAspectFit"
+      />
     </Animated.View>
   );
 }
@@ -104,7 +111,7 @@ export default function TabsLayout() {
         options={{
           title: "Thông báo",
           headerShown: false,
-          tabBarIcon: ({ focused }) => <TabIcon name="bell" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name="notifications" focused={focused} />,
         }}
       />
       <Tabs.Screen
@@ -121,7 +128,7 @@ export default function TabsLayout() {
         options={{
           title: "Cá nhân",
           headerShown: false,
-          tabBarIcon: ({ focused }) => <TabIcon name="user" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon name="person" focused={focused} />,
         }}
       />
     </Tabs>
