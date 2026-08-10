@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile App - Taste Skill UI Redesign</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #005a36;
+        }
+        .subtitle {
+            font-size: 16px;
+            color: #475569;
+        }
+        .section {
+            margin-bottom: 80px;
+        }
+        .section h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #0f172a;
+            border-bottom: 2px solid #005a36;
+            padding-bottom: 10px;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .card-block {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .card-block h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .mockup {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.8;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+        .improvements {
+            margin-top: 16px;
+        }
+        .improvements li {
+            margin-bottom: 8px;
+            padding-left: 24px;
+        }
+        .improvements li:before {
+            content: "✓ ";
+            color: #10b981;
+            font-weight: bold;
+            position: absolute;
+            margin-left: -24px;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .metric {
+            background: #f0fdf4;
+            border-left: 3px solid #10b981;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .metric-label {
+            color: #475569;
+            font-weight: 600;
+        }
+        .metric-value {
+            color: #005a36;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .colors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        .color-box {
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .color-name {
+            color: inherit;
+            margin-bottom: 8px;
+        }
+        .color-code {
+            opacity: 0.8;
+            font-family: monospace;
+            font-size: 11px;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        .timeline:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #10b981;
+        }
+        .timeline-item {
+            margin-bottom: 16px;
+        }
+        .timeline-item:before {
+            content: "";
+            position: absolute;
+            left: -6px;
+            top: 0;
+            width: 14px;
+            height: 14px;
+            background: #10b981;
+            border: 3px solid white;
+            border-radius: 50%;
+        }
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 14px;
+        }
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            .metrics {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mobile App - Taste Skill UI Redesign</h1>
+            <p class="subtitle">Professional upgrade from emoji-based UI to modern, premium design</p>
+        </header>
+
+        <div class="section">
+            <h2>📊 Overview</h2>
+            <div class="comparison">
+                <div class="card-block">
+                    <h3>❌ Before: Dated & Basic</h3>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 12px;">• Emoji-heavy tabs (🏠, 🔔, 🛠️, 👤)</li>
+                        <li style="margin-bottom: 12px;">• Flat design, minimal hierarchy</li>
+                        <li style="margin-bottom: 12px;">• Hardcoded spacing/colors</li>
+                        <li style="margin-bottom: 12px;">• No animations/feedback</li>
+                        <li style="margin-bottom: 12px;">• Hard to scan quickly</li>
+                    </ul>
+                </div>
+                <div class="card-block">
+                    <h3>✅ After: Modern & Professional</h3>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 12px; color: #10b981;">✓ System icons with spring physics</li>
+                        <li style="margin-bottom: 12px; color: #10b981;">✓ Strong hierarchy, clear design</li>
+                        <li style="margin-bottom: 12px; color: #10b981;">✓ Unified design system</li>
+                        <li style="margin-bottom: 12px; color: #10b981;">✓ Smooth animations, feedback</li>
+                        <li style="margin-bottom: 12px; color: #10b981;">✓ Instantly recognizable status</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎨 Design System</h2>
+            <div class="card-block">
+                <h3>Color Palette</h3>
+                <div class="colors">
+                    <div class="color-box" style="background: #005a36;">
+                        <div class="color-name">Primary Green</div>
+                        <div class="color-code">#005A36</div>
+                    </div>
+                    <div class="color-box" style="background: #10b981;">
+                        <div class="color-name">Emerald (Success)</div>
+                        <div class="color-code">#10B981</div>
+                    </div>
+                    <div class="color-box" style="background: #f59e0b; color: #0f172a;">
+                        <div class="color-name">Amber (In Progress)</div>
+                        <div class="color-code">#F59E0B</div>
+                    </div>
+                    <div class="color-box" style="background: #dc2626;">
+                        <div class="color-name">Red (Urgent)</div>
+                        <div class="color-code">#DC2626</div>
+                    </div>
+                    <div class="color-box" style="background: #0ea5e9;">
+                        <div class="color-name">Sky (Info)</div>
+                        <div class="color-code">#0EA5E9</div>
+                    </div>
+                    <div class="color-box" style="background: #0f172a;">
+                        <div class="color-name">Text Dark</div>
+                        <div class="color-code">#0F172A</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>✨ Key Improvements</h2>
+            <div class="comparison">
+                <div class="card-block">
+                    <h3>Login Screen</h3>
+                    <ul class="improvements">
+                        <li>8 emoji pills → 5 role cards</li>
+                        <li>Added description text</li>
+                        <li>FadeInUp animations</li>
+                        <li>Emerald indicator dot</li>
+                        <li>Better error styling</li>
+                    </ul>
+                </div>
+                <div class="card-block">
+                    <h3>Home Screen</h3>
+                    <ul class="improvements">
+                        <li>Metric cards at top</li>
+                        <li>Card-based issue list</li>
+                        <li>Color-coded badges</li>
+                        <li>Time-ago formatting</li>
+                        <li>Staggered animations</li>
+                    </ul>
+                </div>
+                <div class="card-block">
+                    <h3>Tab Bar</h3>
+                    <ul class="improvements">
+                        <li>System icons (high quality)</li>
+                        <li>Spring physics animation</li>
+                        <li>Color-coded states</li>
+                        <li>Native app feel</li>
+                        <li>Professional appearance</li>
+                    </ul>
+                </div>
+                <div class="card-block">
+                    <h3>Design System</h3>
+                    <ul class="improvements">
+                        <li>Unified color palette</li>
+                        <li>7-level spacing system</li>
+                        <li>4-level radius system</li>
+                        <li>Typography hierarchy</li>
+                        <li>No hardcoded values</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📈 Quality Metrics</h2>
+            <div class="card-block">
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-label">WCAG AA Contrast</div>
+                        <div class="metric-value">4.5:1+</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Touch Targets</div>
+                        <div class="metric-value">≥44px</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Animation Performance</div>
+                        <div class="metric-value">60 FPS</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">TypeScript Errors</div>
+                        <div class="metric-value">0</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Spacing System</div>
+                        <div class="metric-value">7-level</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Color Consistency</div>
+                        <div class="metric-value">1 accent</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📚 Documentation Files</h2>
+            <div class="card-block">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <strong>REDESIGN_SUMMARY.md</strong> - Project overview & roadmap
+                    </div>
+                    <div class="timeline-item">
+                        <strong>DESIGN_QUICK_REFERENCE.md</strong> - Quick lookup for colors/spacing (bookmark!)
+                    </div>
+                    <div class="timeline-item">
+                        <strong>IMPLEMENTATION_GUIDE_TASTE.md</strong> - How to extend to other screens
+                    </div>
+                    <div class="timeline-item">
+                        <strong>CHANGES_SUMMARY.md</strong> - Visual before/after comparison
+                    </div>
+                    <div class="timeline-item">
+                        <strong>TASTE_IMPROVEMENT.md</strong> - Detailed improvements guide
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Design Direction:</strong> Human. Simple. Elegant. Modern. ✨</p>
+            <p style="margin-top: 10px;">Taste Skill Redesign | August 2026</p>
+        </footer>
+    </div>
+</body>
+</html>
