@@ -244,18 +244,64 @@ export default function PortalStats() {
 
     issues.forEach((i) => {
       const t = `${i.rootCause || ""} ${i.description || ""} ${i.failureCategory?.name || ""} ${i.otherFailureNote || ""}`.toLowerCase();
-      if (t.match(/máy|cơ|điện|dao|kim|nhiệt|motor|áp suất|hỏng|kẹt/)) {
-        fmC["Máy móc"]++;
-      } else if (t.match(/công nhân|thao tác|tay nghề|đào tạo|bất cẩn|nhầm|quên/)) {
+      // 1. Con người (Ưu tiên số 1: Thao tác, Nhăn, Công nhân, Đào tạo, Định vị...)
+      if (
+        t.includes("thao tác") ||
+        t.includes("nhăn") ||
+        t.includes("con người") ||
+        t.includes("công nhân") ||
+        t.includes("nhân viên") ||
+        t.includes("tay nghề") ||
+        t.includes("đào tạo") ||
+        t.includes("bất cẩn") ||
+        t.includes("nhầm") ||
+        t.includes("quên") ||
+        t.includes("mài không đạt") ||
+        t.includes("quét kéo") ||
+        t.includes("gót không tới") ||
+        t.includes("định vị")
+      ) {
         fmC["Con người"]++;
-      } else if (t.match(/vật liệu|nguyên liệu|keo|da|vải|đế|chỉ|lót|mép/)) {
+      } else if (
+        t.includes("máy móc") ||
+        t.includes("máy may") ||
+        t.includes("máy mài") ||
+        t.includes("máy ép") ||
+        t.includes("motor") ||
+        t.includes("động cơ") ||
+        t.includes("hỏng máy") ||
+        t.includes("gãy kim") ||
+        t.includes("kẹt dao")
+      ) {
+        fmC["Máy móc"]++;
+      } else if (
+        t.includes("vật liệu") ||
+        t.includes("nguyên liệu") ||
+        t.includes("keo") ||
+        t.includes("da") ||
+        t.includes("vải") ||
+        t.includes("đế") ||
+        t.includes("lót") ||
+        t.includes("mép")
+      ) {
         fmC["Vật liệu"]++;
-      } else if (t.match(/cữ|quy trình|thứ tự|phương pháp|hướng dẫn|kỹ thuật/)) {
+      } else if (
+        t.includes("phương pháp") ||
+        t.includes("quy trình") ||
+        t.includes("hướng dẫn") ||
+        t.includes("kỹ thuật")
+      ) {
         fmC["Phương pháp"]++;
-      } else if (t.match(/thước|đo|dưỡng|dung sai|kích thước|size|kiểm tra/)) {
+      } else if (
+        t.includes("đo lường") ||
+        t.includes("thước") ||
+        t.includes("dưỡng") ||
+        t.includes("dung sai") ||
+        t.includes("kích thước")
+      ) {
         fmC["Đo lường"]++;
       } else {
-        fmC["Môi trường"]++;
+        fmC["Con người"]++;
       }
     });
 
