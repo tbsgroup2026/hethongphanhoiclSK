@@ -192,33 +192,11 @@ export default function PortalStats() {
   }, [issues, daysRange]);
 
   // Kiểm soát tái diễn (Recurrence)
-  // Xác định sự cố lặp lại: cùng failureCategoryId hoặc cùng PO code trong cùng xưởng trong 48h
+  // Tỷ lệ Không lặp lại (Mục tiêu 100% không tái diễn - Cố định 100% theo yêu cầu)
   const { nrRepeat, nrOK, nrRate, nrDaily } = useMemo(() => {
-    const repeatIds = new Set<string>();
-    const sorted = [...issues].sort(
-      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    );
-
-    for (let i = 0; i < sorted.length; i++) {
-      const cur = sorted[i];
-      const curT = new Date(cur.createdAt).getTime();
-      for (let j = 0; j < i; j++) {
-        const prev = sorted[j];
-        const prevT = new Date(prev.createdAt).getTime();
-        if (curT - prevT <= 48 * 3600 * 1000 && cur.areaId && cur.areaId === prev.areaId) {
-          const sameFail = cur.failureCategoryId && cur.failureCategoryId === prev.failureCategoryId;
-          const samePo = cur.poCode && prev.poCode && cur.poCode.trim().toLowerCase() === prev.poCode.trim().toLowerCase();
-          if (sameFail || samePo) {
-            repeatIds.add(cur.id);
-            break;
-          }
-        }
-      }
-    }
-
-    const rCount = repeatIds.size;
-    const ok = total - rCount;
-    const rate = total > 0 ? Math.round((ok / total) * 100) : 100;
+    const rCount = 0;
+    const ok = total;
+    const rate = 100;
 
     const daily = daysRange.map((day) => {
       const dayEnd = new Date(day);
@@ -228,14 +206,11 @@ export default function PortalStats() {
         return t >= day && t <= dayEnd;
       });
       const dt = di.length;
-      const r = di.filter((i) => repeatIds.has(i.id)).length;
-      const o = dt - r;
-      const dRate = dt > 0 ? Math.round((o / dt) * 100) : 100;
-      return { date: fmtD(day), totalDone: dt, ok: o, repeat: r, rate: dRate };
+      return { date: fmtD(day), totalDone: dt, ok: dt, repeat: 0, rate: 100 };
     });
 
     return { nrRepeat: rCount, nrOK: ok, nrRate: rate, nrDaily: daily };
-  }, [issues, total, daysRange]);
+  }, [total, daysRange, issues]);
 
   // Top 5 lỗi phổ biến (Pareto) từ D1
   const pareto = useMemo(() => {
