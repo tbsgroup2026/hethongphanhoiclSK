@@ -174,7 +174,8 @@ export default function PortalStats() {
   // SLA Compliance (<= 2h)
   const slaMet = issues.filter(checkSlaMet).length;
   const slaOver = total - slaMet;
-  const slaRate = total > 0 ? Math.round((slaMet / total) * 100) : 100;
+  const slaRate = total > 0 ? Math.round(((slaMet / total) * 100) * 10) / 10 : 100;
+  const slaRateDisplay = slaRate.toString().replace(".", ",");
 
   const slaDaily = useMemo(() => {
     return daysRange.map((day) => {
@@ -371,11 +372,8 @@ export default function PortalStats() {
                     chartArea: { width, height, top, left },
                   } = chart;
                   ctx.save();
-                  ctx.font = "800 28px Inter, sans-serif";
-                  ctx.fillStyle = "#0f172a";
-                  ctx.textAlign = "center";
-                  ctx.textBaseline = "middle";
-                  ctx.fillText(`${pct}%`, left + width / 2, top + height / 2 - 8);
+                  const displayPct = Number.isInteger(pct) ? `${pct}%` : `${pct.toString().replace(".", ",")}%`;
+                  ctx.fillText(displayPct, left + width / 2, top + height / 2 - 8);
                   ctx.font = "700 10px Inter, sans-serif";
                   ctx.fillStyle = "#64748b";
                   ctx.fillText("THỰC HIỆN", left + width / 2, top + height / 2 + 16);
@@ -910,7 +908,7 @@ export default function PortalStats() {
                   </div>
                   <div className="rounded-xl bg-slate-50 p-2 text-center border border-slate-100">
                     <div className="mb-0.5 text-[10.5px] font-semibold text-slate-500">Tỷ lệ đạt</div>
-                    <div className="text-[16px] font-black leading-tight text-[#005A36]">{slaRate}%</div>
+                    <div className="text-[16px] font-black leading-tight text-[#005A36]">{slaRateDisplay}%</div>
                   </div>
                 </div>
                 <div className="mb-1 text-[11px] font-semibold text-slate-500">Biểu đồ xu hướng đáp ứng SLA</div>
@@ -1039,7 +1037,8 @@ export default function PortalStats() {
                   </thead>
                   <tbody>
                     {aRows.map((r) => {
-                      const rate = r.total > 0 ? Math.round((r.slaMet / r.total) * 100) : 100;
+                      const rate = r.total > 0 ? Math.round(((r.slaMet / r.total) * 100) * 10) / 10 : 100;
+                      const rateDisplay = rate.toString().replace(".", ",");
                       return (
                         <tr key={r.name} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/80">
                           <td className="py-2 font-bold text-slate-800">{r.name}</td>
@@ -1049,9 +1048,9 @@ export default function PortalStats() {
                           <td className="py-2 text-center font-bold">
                             {r.total > 0 ? (
                               rate >= 90 ? (
-                                <span className="text-[#005A36] font-black">{rate}%</span>
+                                <span className="text-[#005A36] font-black">{rateDisplay}%</span>
                               ) : (
-                                <span className="text-rose-600 font-black">{rate}%</span>
+                                <span className="text-rose-600 font-black">{rateDisplay}%</span>
                               )
                             ) : (
                               <span className="text-slate-400">-</span>
@@ -1068,9 +1067,9 @@ export default function PortalStats() {
                       <td className="py-2 text-center">
                         {aTotal.total > 0 ? (
                           slaRate >= 90 ? (
-                            <span className="text-[#005A36]">{slaRate}%</span>
+                            <span className="text-[#005A36]">{slaRateDisplay}%</span>
                           ) : (
-                            <span className="text-rose-600">{slaRate}%</span>
+                            <span className="text-rose-600">{slaRateDisplay}%</span>
                           )
                         ) : (
                           "100%"
