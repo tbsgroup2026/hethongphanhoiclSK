@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flow Card - Index</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        padding: 40px;
+        color: white;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 32px;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 16px;
+        opacity: 0.9;
+      }
+
+      .content {
+        padding: 40px;
+      }
+
+      .section {
+        margin-bottom: 40px;
+      }
+
+      .section h2 {
+        color: #1e293b;
+        margin-bottom: 20px;
+        font-size: 22px;
+        border-bottom: 3px solid #10b981;
+        padding-bottom: 10px;
+      }
+
+      .links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+      }
+
+      .link-card {
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 20px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .link-card:hover {
+        border-color: #10b981;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        transform: translateY(-4px);
+      }
+
+      .link-card h3 {
+        color: #10b981;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+
+      .link-card p {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .link-card code {
+        display: inline-block;
+        background: #e2e8f0;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: monospace;
+        font-size: 12px;
+        margin-top: 10px;
+      }
+
+      .quick-links {
+        background: #f0fdf4;
+        border-left: 4px solid #10b981;
+        padding: 20px;
+        border-radius: 6px;
+        margin-bottom: 30px;
+      }
+
+      .quick-links h3 {
+        color: #065f46;
+        margin-bottom: 15px;
+      }
+
+      .quick-links a {
+        display: inline-block;
+        background: #10b981;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        transition: background 0.3s ease;
+      }
+
+      .quick-links a:hover {
+        background: #059669;
+      }
+
+      .badge {
+        display: inline-block;
+        background: #fbbf24;
+        color: #78350f;
+        padding: 4px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-left: 10px;
+      }
+
+      .footer {
+        background: #f1f5f9;
+        padding: 20px 40px;
+        border-top: 1px solid #e2e8f0;
+        text-align: center;
+        color: #64748b;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎯 Flow Card - Incident Management</h1>
+        <p>
+          Complete project for incident handling from detection to dashboard
+          reporting
+        </p>
+      </div>
+
+      <div class="content">
+        <!-- Quick Start -->
+        <div class="quick-links">
+          <h3>⚡ Quick Start (2 minutes)</h3>
+          <a href="flow-card-viewer.html" target="_blank"
+            >👁️ View Flow Diagram</a
+          >
+          <a href="generate-png.html" target="_blank">📸 Generate PNG</a>
+          <a href="flow-card-incident.html" target="_blank"
+            >📄 View HTML Layout</a
+          >
+        </div>
+
+        <!-- Main Viewers -->
+        <div class="section">
+          <h2>🎨 Viewers & Converters</h2>
+          <div class="links-grid">
+            <a href="flow-card-viewer.html" class="link-card" target="_blank">
+              <h3>👁️ Flow Card Viewer</h3>
+              <p>Interactive viewer with PNG download button</p>
+              <code>public/flow-card-viewer.html</code>
+              <div class="badge">⭐ Recommended</div>
+            </a>
+
+            <a href="generate-png.html" class="link-card" target="_blank">
+              <h3>📸 PNG Generator</h3>
+              <p>Auto-generate PNG from SVG with multiple methods</p>
+              <code>public/generate-png.html</code>
+            </a>
+
+            <a href="flow-card-incident.html" class="link-card" target="_blank">
+              <h3>📋 HTML Layout</h3>
+              <p>Beautiful HTML layout with step-by-step details</p>
+              <code>public/flow-card-incident.html</code>
+            </a>
+
+            <a href="project-flowchart.svg" class="link-card" target="_blank">
+              <h3>🗺️ SVG Overview</h3>
+              <p>Downloadable SVG diagram (editable)</p>
+              <code>public/project-flowchart.svg</code>
+            </a>
+          </div>
+        </div>
+
+        <!-- Documentation -->
+        <div class="section">
+          <h2>📚 Documentation</h2>
+          <div class="links-grid">
+            <a href="../QUICKSTART-FLOW-CARD.md" class="link-card">
+              <h3>⚡ Quick Start Guide</h3>
+              <p>2-minute overview of all files and tools</p>
+              <code>QUICKSTART-FLOW-CARD.md</code>
+            </a>
+
+            <a href="../README-FLOW-CARD.md" class="link-card">
+              <h3>📖 Complete Guide</h3>
+              <p>Comprehensive documentation and usage</p>
+              <code>README-FLOW-CARD.md</code>
+              <div class="badge">🔥 Best</div>
+            </a>
+
+            <a href="../PNG-CONVERSION-GUIDE.md" class="link-card">
+              <h3>📸 PNG Conversion</h3>
+              <p>5 different methods to convert SVG to PNG</p>
+              <code>PNG-CONVERSION-GUIDE.md</code>
+            </a>
+
+            <a href="../docs/FLOW-CARD-README.md" class="link-card">
+              <h3>🔍 Detailed Flow</h3>
+              <p>Step-by-step explanation of each stage</p>
+              <code>docs/FLOW-CARD-README.md</code>
+            </a>
+          </div>
+        </div>
+
+        <!-- Flow Overview -->
+        <div class="section">
+          <h2>🎯 The 10-Step Flow</h2>
+          <table style="width: 100%; border-collapse: collapse">
+            <tr style="background: #f1f5f9">
+              <th
+                style="
+                  padding: 12px;
+                  text-align: left;
+                  border: 1px solid #e2e8f0;
+                "
+              >
+                Step
+              </th>
+              <th
+                style="
+                  padding: 12px;
+                  text-align: left;
+                  border: 1px solid #e2e8f0;
+                "
+              >
+                Name
+              </th>
+              <th
+                style="
+                  padding: 12px;
+                  text-align: left;
+                  border: 1px solid #e2e8f0;
+                "
+              >
+                Duration
+              </th>
+              <th
+                style="
+                  padding: 12px;
+                  text-align: left;
+                  border: 1px solid #e2e8f0;
+                "
+              >
+                Owner
+              </th>
+            </tr>
+            <tr>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">1</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">
+                🚨 Detect Issue
+              </td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">Instant</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">Any</td>
+            </tr>
+            <tr style="background: #f8fafc">
+              <td style="padding: 12px; border: 1px solid #e2e8f0">2</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">
+                📢 Report
+              </td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">1 min</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">Reporter</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">3</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">
+                🔍 Investigate
+              </td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">15 min</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">QA+LL+CH</td>
+            </tr>
+            <tr style="background: #f8fafc">
+              <td style="padding: 12px; border: 1px solid #e2e8f0">4</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">
+                📊 Analyze & Decide
+              </td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">5-10 min</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">LL</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">5</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">
+                👨‍💼 Assign Work
+              </td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">5-10 min</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">TP</td>
+            </tr>
+            <tr style="background: #f8fafc">
+              <td style="padding: 12px; border: 1px solid #e2e8f0">6</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">
+                🔧 Execute Fix
+              </td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">1h-24h</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">Worker</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">7</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">
+                ✔️ QC Check
+              </td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">
+                10-30 min
+              </td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">LL</td>
+            </tr>
+            <tr style="background: #f8fafc">
+              <td style="padding: 12px; border: 1px solid #e2e8f0">8</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">
+                ⏰ Monitor
+              </td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">3-48h</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">Team</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">9</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">
+                📤 Close & Report
+              </td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">5-10 min</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">LL/Admin</td>
+            </tr>
+            <tr style="background: #f8fafc">
+              <td style="padding: 12px; border: 1px solid #e2e8f0">10</td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">
+                📊 Dashboard
+              </td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">
+                Real-time
+              </td>
+              <td style="padding: 12px; border: 1px solid #e2e8f0">BGĐ</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>
+          ✅ Flow Card Project Complete | Last Updated: 2026-08-10 | Version:
+          1.0
+        </p>
+        <p>📧 Support: team@example.com | 💬 Slack: #workflow-support</p>
+      </div>
+    </div>
+  </body>
+</html>

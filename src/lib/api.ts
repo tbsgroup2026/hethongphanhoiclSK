@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const DEFAULT_API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:3000";
+const DEFAULT_API_URL = process.env.EXPO_PUBLIC_API_URL || "https://hethongphanhoiclsk.tbsgroup2026.workers.dev";
 const STORAGE_KEY_API_URL = "@tbs_server_url";
 
 let cachedApiUrl: string = DEFAULT_API_URL;

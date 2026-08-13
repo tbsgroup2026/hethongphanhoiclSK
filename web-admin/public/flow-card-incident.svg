@@ -1,0 +1,208 @@
+<svg viewBox="0 0 1600 2400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .header-text { font-family: Arial, sans-serif; font-size: 32px; font-weight: bold; fill: #1e293b; }
+      .subtitle-text { font-family: Arial, sans-serif; font-size: 14px; fill: #64748b; }
+      .step-title { font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; fill: #1e293b; }
+      .step-desc { font-family: Arial, sans-serif; font-size: 13px; fill: #64748b; }
+      .badge-text { font-family: Arial, sans-serif; font-size: 11px; font-weight: 600; }
+      .box-stroke { stroke-width: 2; }
+      .arrow { stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .circle { cx: 800; cy: 100; r: 8; fill: #10b981; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#10b981"/>
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1600" height="2400" fill="#ffffff"/>
+  
+  <!-- Header -->
+  <text x="800" y="60" text-anchor="middle" class="header-text">🎯 Quy Trình Xử Lý Sự Cố Đến Báo BGĐ</text>
+  <text x="800" y="95" text-anchor="middle" class="subtitle-text">Từ lúc phát hiện sự cố → Đóng thẻ báo Ban Giám Đốc → Hiển thị Dashboard</text>
+  
+  <!-- Bước 1: Phát hiện sự cố -->
+  <g>
+    <circle cx="100" cy="180" r="40" fill="#10b981" stroke="#10b981" class="box-stroke"/>
+    <text x="100" y="195" text-anchor="middle" style="font-size: 24px; fill: white;">🚨</text>
+    <rect x="180" y="140" width="380" height="80" fill="#f0fdf4" stroke="#10b981" class="box-stroke" rx="6"/>
+    <text x="370" y="165" text-anchor="middle" class="step-title">Bước 1: Phát Hiện Sự Cố</text>
+    <text x="370" y="185" text-anchor="middle" class="step-desc">Nhân viên/Hệ thống phát hiện sự cố, ghi nhận ngay lập tức</text>
+    <text x="370" y="205" text-anchor="middle" class="step-desc">Status: Mới | Action: Log sự cố</text>
+  </g>
+  
+  <!-- Arrow 1 -->
+  <path d="M 370 220 L 370 280" class="arrow" stroke="#10b981"/>
+  
+  <!-- Bước 2: Báo cáo sự cố -->
+  <g>
+    <circle cx="100" cy="350" r="40" fill="#10b981" stroke="#10b981" class="box-stroke"/>
+    <text x="100" y="365" text-anchor="middle" style="font-size: 24px; fill: white;">📢</text>
+    <rect x="180" y="310" width="380" height="80" fill="#f0fdf4" stroke="#10b981" class="box-stroke" rx="6"/>
+    <text x="370" y="335" text-anchor="middle" class="step-title">Bước 2: Báo Cáo Sự Cố</text>
+    <text x="370" y="355" text-anchor="middle" class="step-desc">Thông báo QA, LL, CH. Gửi alert qua email, Slack</text>
+    <text x="370" y="375" text-anchor="middle" class="step-desc">Tạo Ticket với ID duy nhất</text>
+  </g>
+  
+  <!-- Arrow 2 -->
+  <path d="M 370 390 L 370 450" class="arrow" stroke="#10b981"/>
+  
+  <!-- Bước 3: Điều tra ban đầu -->
+  <g>
+    <circle cx="100" cy="520" r="40" fill="#10b981" stroke="#10b981" class="box-stroke"/>
+    <text x="100" y="535" text-anchor="middle" style="font-size: 24px; fill: white;">🔍</text>
+    <rect x="180" y="480" width="380" height="80" fill="#f0fdf4" stroke="#10b981" class="box-stroke" rx="6"/>
+    <text x="370" y="505" text-anchor="middle" class="step-title">Bước 3: Điều Tra Ban Đầu (15 phút)</text>
+    <text x="370" y="525" text-anchor="middle" class="step-desc">QA + LL + CH điều tra độc lập, áp dụng 5 Whys</text>
+    <text x="370" y="545" text-anchor="middle" class="step-desc">Kết quả: ≥2/3 thông tin → Tiếp tục | Thiếu → Song song</text>
+  </g>
+  
+  <!-- Arrow 3 - Split point -->
+  <path d="M 370 560 L 370 620" class="arrow" stroke="#10b981"/>
+  
+  <!-- Bước 4a: Tổng hợp -->
+  <g>
+    <circle cx="100" cy="690" r="40" fill="#10b981" stroke="#10b981" class="box-stroke"/>
+    <text x="100" y="705" text-anchor="middle" style="font-size: 24px; fill: white;">📊</text>
+    <rect x="180" y="650" width="380" height="80" fill="#f0fdf4" stroke="#10b981" class="box-stroke" rx="6"/>
+    <text x="370" y="675" text-anchor="middle" class="step-title">Bước 4a: Tổng Hợp & Xác Định</text>
+    <text x="370" y="695" text-anchor="middle" class="step-desc">LL tổng hợp nguyên nhân, đề xuất giải pháp</text>
+    <text x="370" y="715" text-anchor="middle" class="step-desc">Có giải pháp? → YES: Bước 5 | NO: Bước 4c</text>
+  </g>
+</svg>
+  
+  <!-- Arrow 4a -->
+  <path d="M 370 730 L 370 790" class="arrow" stroke="#10b981"/>
+  
+  <!-- Bước 4b: Song song (TP chọn phương bàn) -->
+  <g>
+    <circle cx="900" cy="690" r="40" fill="#f59e0b" stroke="#f59e0b" class="box-stroke"/>
+    <text x="900" y="705" text-anchor="middle" style="font-size: 24px; fill: white;">⚡</text>
+    <rect x="1000" y="650" width="380" height="80" fill="#fffbeb" stroke="#f59e0b" class="box-stroke" rx="6"/>
+    <text x="1190" y="675" text-anchor="middle" class="step-title">Bước 4b: TP Chọn Phương Bàn</text>
+    <text x="1190" y="695" text-anchor="middle" class="step-desc">Song song: Quá 15p hoặc thiếu thông tin</text>
+    <text x="1190" y="715" text-anchor="middle" class="step-desc">→ Tiếp tục Bước 5 (Song song xử lý)</text>
+  </g>
+  
+  <!-- Arrow 4b -->
+  <path d="M 1190 730 L 1190 790 L 800 790 L 800 860" class="arrow" stroke="#f59e0b" stroke-dasharray="5,5"/>
+  
+  <!-- Bước 4c: Escalate (thẳng xuống) -->
+  <g>
+    <circle cx="1550" cy="690" r="40" fill="#ef4444" stroke="#ef4444" class="box-stroke"/>
+    <text x="1550" y="705" text-anchor="middle" style="font-size: 24px; fill: white;">🚀</text>
+    <rect x="1100" y="650" width="380" height="80" fill="#fef2f2" stroke="#ef4444" class="box-stroke" rx="6"/>
+    <text x="1290" y="675" text-anchor="middle" class="step-title">Bước 4c: Escalate (Nếu cần)</text>
+    <text x="1290" y="695" text-anchor="middle" class="step-desc">Không có giải pháp nội bộ → Báo BGĐ</text>
+    <text x="1290" y="715" text-anchor="middle" class="step-desc">Status: "Escalated to Management"</text>
+  </g>
+  
+  <!-- Arrow 4c -->
+  <path d="M 1290 730 L 1290 1800" class="arrow" stroke="#ef4444" stroke-dasharray="5,5"/>
+  
+  <!-- Bước 5: Giao nhân viên xử lý -->
+  <g>
+    <circle cx="100" cy="930" r="40" fill="#10b981" stroke="#10b981" class="box-stroke"/>
+    <text x="100" y="945" text-anchor="middle" style="font-size: 24px; fill: white;">👨‍💼</text>
+    <rect x="180" y="890" width="380" height="80" fill="#f0fdf4" stroke="#10b981" class="box-stroke" rx="6"/>
+    <text x="370" y="915" text-anchor="middle" class="step-title">Bước 5: Giao Nhân Viên Xử Lý</text>
+    <text x="370" y="935" text-anchor="middle" class="step-desc">TP giao việc cho nhân viên cụ thể (1 người/1 việc)</text>
+    <text x="370" y="955" text-anchor="middle" class="step-desc">Status: "In Progress", Assigned To = [NV]</text>
+  </g>
+  
+  <!-- Arrow 5 -->
+  <path d="M 370 970 L 370 1030" class="arrow" stroke="#10b981"/>
+  
+  <!-- Bước 6: Thực hiện xử lý -->
+  <g>
+    <circle cx="100" cy="1100" r="40" fill="#10b981" stroke="#10b981" class="box-stroke"/>
+    <text x="100" y="1115" text-anchor="middle" style="font-size: 24px; fill: white;">🔧</text>
+    <rect x="180" y="1060" width="380" height="80" fill="#f0fdf4" stroke="#10b981" class="box-stroke" rx="6"/>
+    <text x="370" y="1085" text-anchor="middle" class="step-title">Bước 6: Thực Hiện Xử Lý</text>
+    <text x="370" y="1105" text-anchor="middle" class="step-desc">Nhân viên sửa chữa, lập Biên Bản, tính chi phí</text>
+    <text x="370" y="1125" text-anchor="middle" class="step-desc">Upload: Ảnh, Hóa đơn, Log. Comment: "Xử lý xong"</text>
+  </g>
+  
+  <!-- Arrow 6 -->
+  <path d="M 370 1140 L 370 1200" class="arrow" stroke="#10b981"/>
+  
+  <!-- Bước 7: LL xác nhận -->
+  <g>
+    <circle cx="100" cy="1270" r="40" fill="#3b82f6" stroke="#3b82f6" class="box-stroke"/>
+    <text x="100" y="1285" text-anchor="middle" style="font-size: 24px; fill: white;">✔️</text>
+    <rect x="180" y="1230" width="380" height="80" fill="#eff6ff" stroke="#3b82f6" class="box-stroke" rx="6"/>
+    <text x="370" y="1255" text-anchor="middle" class="step-title">Bước 7: LL Xác Nhận</text>
+    <text x="370" y="1275" text-anchor="middle" class="step-desc">Kiểm tra chất lượng, xác nhận hồ sơ đầy đủ</text>
+    <text x="370" y="1295" text-anchor="middle" class="step-desc">OK? → YES: Bước 8 | NO: Quay lại Bước 6</text>
+  </g>
+  
+  <!-- Arrow 7 (Loop back option - dashed) -->
+  <path d="M 560 1270 L 620 1270 L 620 1100 L 560 1100" class="arrow" stroke="#3b82f6" stroke-dasharray="5,5"/>
+  <text x="640" y="1190" style="font-size: 11px; fill: #3b82f6;">Nếu chưa OK</text>
+  
+  <!-- Arrow 7 (Main) -->
+  <path d="M 370 1310 L 370 1370" class="arrow" stroke="#10b981"/>
+  
+  <!-- Bước 8: Theo dõi 3-48h -->
+  <g>
+    <circle cx="100" cy="1440" r="40" fill="#8b5cf6" stroke="#8b5cf6" class="box-stroke"/>
+    <text x="100" y="1455" text-anchor="middle" style="font-size: 24px; fill: white;">⏰</text>
+    <rect x="180" y="1400" width="380" height="80" fill="#faf5ff" stroke="#8b5cf6" class="box-stroke" rx="6"/>
+    <text x="370" y="1425" text-anchor="middle" class="step-title">Bước 8: Theo Dõi 3-48 Giờ</text>
+    <text x="370" y="1445" text-anchor="middle" class="step-desc">Xác nhận sự cố không tái diễn, giải pháp ổn định</text>
+    <text x="370" y="1465" text-anchor="middle" class="step-desc">Status: "Under Monitoring", Update real-time</text>
+  </g>
+  
+  <!-- Arrow 8 -->
+  <path d="M 370 1480 L 370 1540" class="arrow" stroke="#8b5cf6"/>
+  
+  <!-- Bước 9: Đóng thẻ & Báo BGĐ -->
+  <g>
+    <circle cx="100" cy="1610" r="40" fill="#06b6d4" stroke="#06b6d4" class="box-stroke"/>
+    <text x="100" y="1625" text-anchor="middle" style="font-size: 24px; fill: white;">📤</text>
+    <rect x="180" y="1570" width="380" height="80" fill="#ecf5ff" stroke="#06b6d4" class="box-stroke" rx="6"/>
+    <text x="370" y="1595" text-anchor="middle" class="step-title">Bước 9: Đóng Thẻ & Báo BGĐ</text>
+    <text x="370" y="1615" text-anchor="middle" class="step-desc">Tạo Báo Cáo Hoàn Thành, gửi cho BGĐ</text>
+    <text x="370" y="1635" text-anchor="middle" class="step-desc">Card Status: "Closed", Email → BGĐ/TGĐNNN/TP</text>
+  </g>
+  
+  <!-- Arrow 9 -->
+  <path d="M 370 1650 L 370 1710" class="arrow" stroke="#06b6d4"/>
+  
+  <!-- Bước 10: Hiển thị Dashboard -->
+  <g>
+    <circle cx="100" cy="1780" r="40" fill="#ec4899" stroke="#ec4899" class="box-stroke"/>
+    <text x="100" y="1795" text-anchor="middle" style="font-size: 24px; fill: white;">📊</text>
+    <rect x="180" y="1740" width="380" height="80" fill="#fce7f3" stroke="#ec4899" class="box-stroke" rx="6"/>
+    <text x="370" y="1765" text-anchor="middle" class="step-title">Bước 10: Hiển Thị Dashboard</text>
+    <text x="370" y="1785" text-anchor="middle" class="step-desc">Thẻ đóng hiển thị trên Dashboard, BGĐ xem chi tiết</text>
+    <text x="370" y="1805" text-anchor="middle" class="step-desc">Metrics: Tổng sự cố, Đã giải quyết, KPI</text>
+  </g>
+  
+  <!-- Tóm tắt -->
+  <rect x="150" y="1900" width="1300" height="400" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2" rx="8"/>
+  <text x="800" y="1935" text-anchor="middle" style="font-size: 18px; font-weight: bold; fill: #1e293b;">📋 Tóm Tắt Quy Trình</text>
+  
+  <text x="170" y="1970" style="font-size: 13px; fill: #1e293b; font-weight: bold;">⏱️ Tổng Thời Gian:</text>
+  <text x="170" y="1990" style="font-size: 12px; fill: #64748b;">15 phút - 48 giờ (tuỳ Severity)</text>
+  
+  <text x="170" y="2030" style="font-size: 13px; fill: #1e293b; font-weight: bold;">📍 Card Status Progression:</text>
+  <text x="170" y="2050" style="font-size: 12px; fill: #64748b;">New → In Progress → Under Monitoring → Closed → Archived</text>
+  
+  <text x="170" y="2090" style="font-size: 13px; fill: #1e293b; font-weight: bold;">👥 Các Vai Trò Chính:</text>
+  <text x="170" y="2110" style="font-size: 12px; fill: #64748b;">QA (Điều tra) | LL (Tổng hợp, Kiểm tra) | CH (Giám sát)</text>
+  <text x="170" y="2130" style="font-size: 12px; fill: #64748b;">TP (Phân công) | Nhân viên (Xử lý) | BGĐ (Quyết định)</text>
+  
+  <text x="170" y="2170" style="font-size: 13px; fill: #1e293b; font-weight: bold;">💾 Dữ Liệu Lưu Trữ:</text>
+  <text x="170" y="2190" style="font-size: 12px; fill: #64748b;">Report PDF, Ảnh trước/sau, Work logs, Chi phí, Timesheets</text>
+  
+  <text x="170" y="2230" style="font-size: 13px; fill: #1e293b; font-weight: bold;">⚠️ Điểm Nguy Hiểm:</text>
+  <text x="170" y="2250" style="font-size: 12px; fill: #64748b;">• Quá 15p thiếu thông tin → Song song xử lý (Bước 4b)</text>
+  <text x="170" y="2270" style="font-size: 12px; fill: #64748b;">• Không có giải pháp nội bộ → Escalate (Bước 4c)</text>
+  <text x="170" y="2290" style="font-size: 12px; fill: #64748b;">• LL kiểm tra chưa OK → Lặp lại Bước 6</text>
+  
+  <text x="170" y="2330" style="font-size: 12px; fill: #d97706; font-weight: bold;">✓ KPI Theo Dõi: Thời gian response ≤15p | Xử lý ≤48h | Tỷ lệ lặp lại ≤5%</text>
+  
+</svg>
+</svg>

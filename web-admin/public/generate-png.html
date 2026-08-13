@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Generate PNG from SVG</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background: #f0f0f0;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #333;
+      }
+      button {
+        background: #10b981;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 10px 0;
+      }
+      button:hover {
+        background: #059669;
+      }
+      .status {
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 4px;
+      }
+      .success {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .error {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .loading {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      #preview {
+        margin-top: 20px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 4px;
+      }
+      svg {
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📸 SVG to PNG Generator</h1>
+      <p>This tool converts flow-card-incident.svg to PNG format.</p>
+
+      <button onclick="generatePNG()">🎨 Generate PNG (Method 1)</button>
+      <button onclick="generatePNGCanvas()">🎨 Generate PNG (Method 2)</button>
+      <button onclick="previewSVG()">👁️ Preview SVG</button>
+
+      <div id="status"></div>
+      <div id="preview"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+      function showStatus(msg, type) {
+        const status = document.getElementById("status");
+        status.className = "status " + type;
+        status.innerText = msg;
+      }
+
+      function previewSVG() {
+        fetch("flow-card-incident.svg")
+          .then((r) => r.text())
+          .then((svg) => {
+            document.getElementById("preview").innerHTML = svg;
+            showStatus("✅ SVG preview loaded", "success");
+          })
+          .catch((err) => showStatus("❌ Error: " + err, "error"));
+      }
+
+      function generatePNG() {
+        showStatus("⏳ Loading SVG...", "loading");
+
+        fetch("flow-card-incident.svg")
+          .then((r) => r.text())
+          .then((svgText) => {
+            showStatus("⏳ Creating canvas...", "loading");
+
+            // Create temporary container
+            const temp = document.createElement("div");
+            temp.innerHTML = svgText;
+            temp.style.position = "absolute";
+            temp.style.left = "-9999px";
+            temp.style.top = "-9999px";
+            temp.style.background = "white";
+            document.body.appendChild(temp);
+
+            // Get SVG element
+            const svg = temp.querySelector("svg");
+            const width = parseInt(svg.getAttribute("viewBox").split(" ")[2]);
+            const height = parseInt(svg.getAttribute("viewBox").split(" ")[3]);
+
+            showStatus(
+              "⏳ Rendering to canvas (" + width + "x" + height + ")...",
+              "loading",
+            );
+
+            // Render to canvas
+            html2canvas(temp, {
+              scale: 2,
+              backgroundColor: "#ffffff",
+              width: width,
+              height: height,
+              useCORS: true,
+              allowTaint: true,
+            })
+              .then((canvas) => {
+                showStatus("✅ Canvas created, downloading...", "loading");
+
+                // Download
+                const link = document.createElement("a");
+                link.href = canvas.toDataURL("image/png");
+                link.download = "flow-card-incident.png";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                document.body.removeChild(temp);
+
+                showStatus(
+                  "✅ PNG downloaded! File: " +
+                    Math.round(link.href.length / 1024) +
+                    " KB",
+                  "success",
+                );
+              })
+              .catch((err) => {
+                document.body.removeChild(temp);
+                showStatus("❌ Error rendering: " + err.message, "error");
+              });
+          })
+          .catch((err) => showStatus("❌ Error loading SVG: " + err, "error"));
+      }
+
+      function generatePNGCanvas() {
+        showStatus("⏳ Loading SVG...", "loading");
+
+        const canvas = document.createElement("canvas");
+        canvas.width = 3200;
+        canvas.height = 4800;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        fetch("flow-card-incident.svg")
+          .then((r) => r.blob())
+          .then((blob) => {
+            const url = URL.createObjectURL(blob);
+            const img = new Image();
+            img.onload = function () {
+              showStatus("⏳ Drawing to canvas...", "loading");
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              URL.revokeObjectURL(url);
+
+              showStatus("⏳ Downloading PNG...", "loading");
+              canvas.toBlob((blob) => {
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "flow-card-incident.png";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                showStatus(
+                  "✅ PNG downloaded! File: " +
+                    Math.round(blob.size / 1024) +
+                    " KB",
+                  "success",
+                );
+              }, "image/png");
+            };
+            img.onerror = () =>
+              showStatus("❌ Error loading SVG image", "error");
+            img.src = url;
+          })
+          .catch((err) => showStatus("❌ Error: " + err, "error"));
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flow Card - Sự Cố Đến Báo BGĐ</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 40px;
+        max-width: 1400px;
+        width: 100%;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        border-bottom: 3px solid #10b981;
+        padding-bottom: 20px;
+      }
+
+      .header h1 {
+        color: #1e293b;
+        font-size: 28px;
+        margin-bottom: 5px;
+      }
+
+      .header p {
+        color: #64748b;
+        font-size: 14px;
+      }
+
+      .timeline {
+        position: relative;
+        padding: 20px 0;
+      }
+
+      .timeline-item {
+        display: flex;
+        margin-bottom: 40px;
+        position: relative;
+      }
+
+      .timeline-item:last-child .timeline-line {
+        display: none;
+      }
+
+      .timeline-dot {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 24px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        z-index: 2;
+      }
+
+      .timeline-dot.warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+      }
+
+      .timeline-dot.danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+      }
+
+      .timeline-dot.info {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      }
+
+      .timeline-dot.purple {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+      }
+
+      .timeline-line {
+        position: absolute;
+        left: 30px;
+        top: 60px;
+        width: 2px;
+        height: 40px;
+        background: linear-gradient(to bottom, #10b981, #e5e7eb);
+        z-index: 1;
+      }
+
+      .timeline-content {
+        margin-left: 30px;
+        flex: 1;
+        padding-top: 5px;
+      }
+
+      .timeline-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: #1e293b;
+        margin-bottom: 8px;
+      }
+
+      .timeline-description {
+        font-size: 13px;
+        color: #64748b;
+        line-height: 1.6;
+        margin-bottom: 10px;
+      }
+
+      .timeline-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .badge-time {
+        background: #f1f5f9;
+        color: #475569;
+      }
+
+      .badge-role {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+
+      .badge-status {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .badge-action {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .badge-escalate {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .decision-box {
+        background: #f0fdf4;
+        border-left: 4px solid #10b981;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 6px;
+        font-size: 13px;
+        color: #15803d;
+      }
+
+      .decision-box.escalate {
+        background: #fef2f2;
+        border-left-color: #ef4444;
+        color: #991b1b;
+      }
+
+      .decision-box.process {
+        background: #eff6ff;
+        border-left-color: #3b82f6;
+        color: #1e40af;
+      }
+
+      .sidebar-info {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 40px;
+        border: 2px solid #e2e8f0;
+      }
+
+      .sidebar-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: #1e293b;
+        margin-bottom: 15px;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 13px;
+      }
+
+      .info-row:last-child {
+        border-bottom: none;
+      }
+
+      .info-label {
+        color: #64748b;
+        font-weight: 600;
+      }
+
+      .info-value {
+        color: #1e293b;
+        font-weight: 500;
+      }
+
+      .duration-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 6px;
+        vertical-align: middle;
+      }
+
+      .duration-fast {
+        background: #10b981;
+      }
+
+      .duration-medium {
+        background: #f59e0b;
+      }
+
+      .duration-long {
+        background: #ef4444;
+      }
+
+      .notes {
+        background: #fef9e7;
+        border-left: 4px solid #eab308;
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 6px;
+        font-size: 12px;
+        color: #78350f;
+        line-height: 1.6;
+      }
+
+      .input-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 10px;
+      }
+
+      .input-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+        white-space: nowrap;
+      }
+
+      .input-group input {
+        flex: 1;
+        max-width: 200px;
+        padding: 8px 12px;
+        border: 2px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        transition: border-color 0.3s;
+      }
+
+      .input-group input:focus {
+        outline: none;
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+      }
+
+      .input-group input::-webkit-outer-spin-button,
+      .input-group input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .input-group input[type="number"] {
+        -moz-appearance: textfield;
+      }
+
+      .input-helper {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎯 Quy Trình Xử Lý Sự Cố Đến Báo BGĐ</h1>
+        <p>
+          Từ lúc phát hiện sự cố → Đóng thẻ báo Ban Giám Đốc → Hiển thị
+          Dashboard
+        </p>
+      </div>
+
+      <div class="timeline">
+        <!-- Bước 1: Phát hiện sự cố -->
+        <div class="timeline-item">
+          <div class="timeline-dot">🚨</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">Bước 1: Phát Hiện Sự Cố</div>
+            <div class="timeline-description">
+              Nhân viên/Hệ thống phát hiện có sự cố xảy ra trong hệ thống. Sự cố
+              được ghi nhận và thông báo ngay lập tức.
+            </div>
+            <div class="timeline-meta">
+              <span class="badge badge-time">⏱️ Thời gian: 0 phút</span>
+              <span class="badge badge-status">✓ Trạng thái: Mới</span>
+              <span class="badge badge-action">📝 Action: Log sự cố</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 2: Báo cáo sự cố -->
+        <div class="timeline-item">
+          <div class="timeline-dot">📢</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">Bước 2: Báo Cáo Sự Cố</div>
+            <div class="timeline-description">
+              Thông báo đến QA, LL, CH ngay lập tức. Hệ thống gửi alert/thông
+              báo qua email, Slack, hoặc dashboard. SX được FYI.
+            </div>
+            <div class="timeline-meta">
+              <span class="badge badge-time">⏱️ Thời gian: 1 phút</span>
+              <span class="badge badge-role">👥 Để: QA, LL, CH</span>
+              <span class="badge badge-action">🔔 Action: Gửi thông báo</span>
+            </div>
+            <div class="decision-box">
+              📌 <strong>Hành động:</strong> Tạo Ticket/Card với ID duy nhất,
+              gán Severity, Category, Description
+              <div class="input-group">
+                <label for="product-count">Số lượng sản phẩm lỗi:</label>
+                <input
+                  type="number"
+                  id="product-count"
+                  name="product-count"
+                  min="0"
+                  placeholder="Nhập số lượng"
+                />
+              </div>
+              <div class="input-helper">
+                💡 Nhập số sản phẩm bị lỗi liên quan đến sự cố này
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 3: Điều tra ban đầu -->
+        <div class="timeline-item">
+          <div class="timeline-dot">🔍</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">Bước 3: Điều Tra Ban Đầu (15 phút)</div>
+            <div class="timeline-description">
+              QA, LL, CH điều tra độc lập, áp dụng 5 Whys Method. Mỗi người
+              tương tác từng câu hỏi riêng lẻ. Thông tin được lưu vào Card.
+            </div>
+            <div class="timeline-meta">
+              <span class="badge badge-time">⏱️ Thời gian: 15 phút</span>
+              <span class="badge badge-role">👥 Thực hiện: QA + LL + CH</span>
+              <span class="badge badge-action">📋 Action: Update Card</span>
+            </div>
+            <div class="decision-box process">
+              ⚡ <strong>Kết quả:</strong> Nếu có ≥2/3 thông tin → Bước 4a | Nếu
+              thiếu thông tin → Bước 4b
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 4a: Tổng hợp & xác định -->
+        <div class="timeline-item">
+          <div class="timeline-dot">📊</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">
+              Bước 4a: Tổng Hợp Nguyên Nhân & Giải Pháp
+            </div>
+            <div class="timeline-description">
+              LL tổng hợp toàn bộ thông tin từ QA & CH. Xác định Root Cause
+              (Nguyên nhân gốc). Đề xuất giải pháp khả thi.
+            </div>
+            <div class="timeline-meta">
+              <span class="badge badge-time">⏱️ Thời gian: 5-10 phút</span>
+              <span class="badge badge-role">👥 Thực hiện: LL (Lead)</span>
+              <span class="badge badge-action">📝 Action: Analysis Report</span>
+            </div>
+            <div class="decision-box">
+              🎯 <strong>Quyết định:</strong> Có giải pháp nội bộ? → YES: Bước 5
+              | NO: Bước 4c (Escalate)
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 4b: Xử lý song song -->
+        <div class="timeline-item">
+          <div class="timeline-dot warning">⚡</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">
+              Bước 4b: TP Chọn Phương Bàn (Song Song)
+            </div>
+            <div class="timeline-description">
+              Nếu quá 15 phút hoặc thiếu thông tin, TP (Trưởng Phòng) chọn
+              phương bàn xử lý ngay lập tức. Không chờ hoàn thành Bước 3.
+            </div>
+            <div class="timeline-meta">
+              <span class="badge badge-time">⏱️ Thời gian: 5 phút</span>
+              <span class="badge badge-role">👥 Thực hiện: TP</span>
+              <span class="badge badge-action"
+                >✅ Action: Assign Department</span
+              >
+            </div>
+            <div class="decision-box process">
+              → Tiếp tục Bước 5 (Xử lý song song với Bước 4a)
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 4c: Escalate -->
+        <div class="timeline-item">
+          <div class="timeline-dot danger">🚀</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">
+              Bước 4c: Escalate Lên Ban Giám Đốc (Nếu không có giải pháp)
+            </div>
+            <div class="timeline-description">
+              Nếu không có giải pháp nội bộ khả thi, báo cáo ngay lên GD (Giám
+              Đốc), TGĐNNN, với đầy đủ thông tin, hình ảnh, dự tính chi phí.
+            </div>
+            <div class="timeline-meta">
+              <span class="badge badge-escalate">🚨 Urgency: HIGH</span>
+              <span class="badge badge-role">👥 Để: GD, TGĐNNN</span>
+              <span class="badge badge-action"
+                >📤 Action: Create Escalation Ticket</span
+              >
+            </div>
+            <div class="decision-box escalate">
+              ⛔ <strong>Card Status:</strong> "Escalated to Management" → Chờ
+              quyết định → Bước 7
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 5: Giao nhân viên xử lý -->
+        <div class="timeline-item">
+          <div class="timeline-dot">👨‍💼</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">
+              Bước 5: Giao Nhân Viên Xử Lý (1 người/1 việc)
+            </div>
+            <div class="timeline-description">
+              TP giao việc cho nhân viên cụ thể trong phòng ban. Nhân viên xác
+              nhận nhận việc, lên kế hoạch xử lý chi tiết.
+            </div>
+            <div class="timeline-meta">
+              <span class="badge badge-time">⏱️ Thời gian: 5-10 phút</span>
+              <span class="badge badge-role">👥 Thực hiện: TP → Nhân viên</span>
+              <span class="badge badge-action">✅ Action: Assign Task</span>
+            </div>
+            <div class="decision-box">
+              📍 <strong>Card Update:</strong> Status = "In Progress", Assigned
+              To = [Tên NV], Priority = [Mức ưu tiên]
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 6: Thực hiện xử lý -->
+        <div class="timeline-item">
+          <div class="timeline-dot">🔧</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">Bước 6: Thực Hiện Xử Lý / Sửa Chữa</div>
+            <div class="timeline-description">
+              Nhân viên thực hiện sửa chữa/xử lý. Lập Biên Bản Xác Nhận
+              (chiDÁNO), tính toán chi phí, lấy chữ ký, hình ảnh trước/sau.
+            </div>
+            <div class="timeline-meta">
+              <span class="badge badge-time"
+                >⏱️ Thời gian: 1 giờ - 24 giờ (tuỳ Severity)</span
+              >
+              <span class="badge badge-role"
+                >👥 Thực hiện: Nhân viên được giao</span
+              >
+              <span class="badge badge-action"
+                >📸 Action: Upload evidences</span
+              >
+            </div>
+            <div class="decision-box">
+              📌 <strong>Card Update:</strong> Attach photos, receipts, work
+              logs. Comment: "Xử lý hoàn thành"
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 7: LL xác nhận -->
+        <div class="timeline-item">
+          <div class="timeline-dot info">✔️</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">
+              Bước 7: LL Xác Nhận & Kiểm Tra Chất Lượng
+            </div>
+            <div class="timeline-description">
+              LL kiểm tra lại công việc, xác nhận tất cả hồ sơ đầy đủ, chất
+              lượng đạt yêu cầu. Nếu OK → Approve. Nếu chưa OK → Reject & yêu
+              cầu sửa lại.
+            </div>
+            <div class="timeline-meta">
+              <span class="badge badge-time">⏱️ Thời gian: 10-30 phút</span>
+              <span class="badge badge-role">👥 Thực hiện: LL (Reviewer)</span>
+              <span class="badge badge-action"
+                >✅ Action: Review & Approve</span
+              >
+            </div>
+            <div class="decision-box process">
+              🔄 <strong>Quyết định:</strong> Chất lượng OK? → YES: Bước 8 | NO:
+              Quay lại Bước 6 (Sửa lại)
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 8: Theo dõi 3-48h -->
+        <div class="timeline-item">
+          <div class="timeline-dot purple">⏰</div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">
+              Bước 8: Theo Dõi Chất Lượng (3 - 48 Giờ)
+            </div>
+            <div class="timeline-description">
+              Sau khi hoàn thành, theo dõi kết quả trong 3-48 giờ (tuỳ
+              Severity). Xác nhận sự cố không tái diễn, giải pháp ổn định.
+            </div>
+            <div class="timeline-meta">
+              <span class="badge badge-time">⏱️ Thời gian: 3-48 giờ</span>
+              <span class="badge badge-role">👥 Thực hiện: LL + Nhân viên</span>
+              <span class="badge badge-action"
+                >📊 Action: Monitor & Verify</span
+              >
+            </div>
+            <div class="decision-box">
+              📍 <strong>Card Status:</strong> "Under Monitoring". Update
+              dashboard real-time.
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 9: Đóng thẻ & Báo BGĐ -->
+        <div class="timeline-item">
+          <div
+            class="timeline-dot"
+            style="
+              background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+              box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+            "
+          >
+            📤
+          </div>
+          <div class="timeline-line"></div>
+          <div class="timeline-content">
+            <div class="timeline-title">
+              Bước 9: Đóng Thẻ & Báo Ban Giám Đốc
+            </div>
+            <div class="timeline-description">
+              Xác nhận sự cố đã được xử lý thành công. Tạo Báo Cáo Hoàn Thành
+              với toàn bộ chi tiết: nguyên nhân, giải pháp, chi phí, thời gian,
+              người thực hiện. Gửi cho BGĐ thông qua hệ thống.
+            </div>
+            <div class="timeline-meta">
+              <span class="badge badge-time">⏱️ Thời gian: 5-10 phút</span>
+              <span class="badge badge-role">👥 Thực hiện: LL / Admin</span>
+              <span class="badge badge-action"
+                >📨 Action: Send Report to BGĐ</span
+              >
+            </div>
+            <div class="decision-box process">
+              ✅ <strong>Card Status:</strong> "Closed" | Báo Cáo =
+              [PDF/Email]<br />
+              📧 <strong>Recipients:</strong> BGĐ, TGĐNNN, TP (CC)
+            </div>
+          </div>
+        </div>
+
+        <!-- Bước 10: Hiển thị Dashboard -->
+        <div class="timeline-item">
+          <div
+            class="timeline-dot"
+            style="
+              background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+              box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+            "
+          >
+            📊
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-title">Bước 10: Hiển Thị Trên Dashboard</div>
+            <div class="timeline-description">
+              Thẻ đóng được hiển thị trên Dashboard với đầy đủ thông tin lịch
+              sử. BGĐ có thể xem chi tiết báo cáo hoàn thành, thống kê, KPI về
+              thời gian xử lý, tỷ lệ lặp lại.
+            </div>
+            <div class="timeline-meta">
+              <span class="badge badge-time">⏱️ Thời gian: Real-time</span>
+              <span class="badge badge-role">👁️ Viewer: BGĐ, TP, LL, QA</span>
+              <span class="badge badge-status"
+                >✓ Trạng thái: Archived/Closed</span
+              >
+            </div>
+            <div class="decision-box">
+              📊 <strong>Dashboard Metrics:</strong> Total incidents, Resolved,
+              Pending, Avg resolution time, Recurrence rate
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thông tin bổ sung -->
+      <div class="sidebar-info">
+        <div class="sidebar-title">📋 Tóm Tắt Quy Trình</div>
+
+        <div class="info-row">
+          <span class="info-label"
+            >⏱️ Tổng Thời Gian (Từ đầu đến báo BGĐ):</span
+          >
+          <span class="info-value">15 phút - 48 giờ (tuỳ Severity)</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">🎯 Các Giai Đoạn Chính:</span>
+          <span class="info-value"
+            >Báo cáo → Điều tra → Xử lý → Kiểm tra → Giám sát → Báo BGĐ</span
+          >
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">👥 Các Vai Trò Chính:</span>
+          <span class="info-value">QA, LL, CH, TP, Nhân viên, BGĐ</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">📍 Card Status Progression:</span>
+          <span class="info-value"
+            >New → In Progress → Under Monitoring → Closed → Archived</span
+          >
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">💾 Dữ liệu lưu trữ:</span>
+          <span class="info-value"
+            >Report PDF, Photos, Work logs, Timesheets, Cost breakdown</span
+          >
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">⚠️ Điểm nguy hiểm:</span>
+          <span class="info-value">
+            <span class="duration-indicator duration-medium"></span>Quá 15p
+            không đủ thông tin → Song song xử lý
+            <br />
+            <span class="duration-indicator duration-long"></span>Không có giải
+            pháp nội bộ → Escalate
+          </span>
+        </div>
+      </div>
+
+      <div class="notes">
+        <strong>📌 Ghi Chú Quan Trọng:</strong><br />
+        ✓ Card phải có ID duy nhất, được tạo tự động khi sự cố xảy ra<br />
+        ✓ Tất cả thay đổi status phải được timestamp và có người thực hiện<br />
+        ✓ Báo cáo hoàn thành phải đầy đủ: nguyên nhân, giải pháp, chi phí, người
+        thực hiện, thời gian<br />
+        ✓ Dashboard cập nhật real-time khi thẻ được đóng<br />
+        ✓ KPI theo dõi: Thời gian response ≤15p, Thời gian hoàn thành ≤48h, Tỷ
+        lệ lặp lại ≤5%
+      </div>
+    </div>
+  </body>
+</html>

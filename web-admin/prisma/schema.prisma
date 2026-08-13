@@ -1,0 +1,351 @@
+// Prisma schema cho hệ thống Quản lý Sự cố Chất lượng (QA / 5M+1E) — TBS HTPH-CLSK
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+// Client riêng cho Cloudflare Workers: dùng wasm-compiler-edge (import file .wasm thật)
+// thay vì decode base64 + WebAssembly.Module() lúc runtime — cách này bị workerd chặn
+// (CompileError: Wasm code generation disallowed by embedder).
+generator clientWorkerd {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma-workerd"
+  runtime  = "workerd"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Role {
+  ADMIN // Chỉ dùng web-admin
+  OPERATOR // NV vận hành — chỉ báo cáo
+  QA
+  LINE_LEADER // Trưởng line — điều tra 5M+1E, chốt nguyên nhân gốc, xác nhận hoàn thành
+  TECHNOLOGY // Công nghệ — điều tra 5M+1E
+  DEPARTMENT_HEAD // Trưởng phòng ban — phân việc cho bảo trì, quản lý phòng ban
+  MAINTENANCE // Bảo trì — nhận việc, sửa chữa
+  DIRECTOR // Giám đốc — nhận thông báo hoàn thành toàn nhà máy, xử lý SOS
+}
+
+enum CategoryType {
+  AREA // Khu vực / Xưởng
+  PRODUCTION_LINE // Chuyền
+  TEAM // Tổ
+}
+
+// Bảng Nhà máy — gốc của cây tổ chức multi-tenant
+model Factory {
+  id        String   @id @default(cuid())
+  code      String   @unique // VD: KG1, KG2
+  name      String   // VD: Nhà máy TBS Kiên Giang 1
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  areas       Category[]
+  departments Department[]
+  users       User[]
+  issues      QualityIssue[]
+
+  @@map("factories")
+}
+
+// Bảng Phòng ban — trực thuộc Nhà máy
+model Department {
+  id        String   @id @default(cuid())
+  factoryId String
+  factory   Factory  @relation(fields: [factoryId], references: [id], onDelete: Cascade)
+  code      String   // VD: DEPT_MAINTENANCE, DEPT_QA
+  name      String   // VD: Phòng Cơ Điện - Bảo Trì, Phòng Quản Lý Chất Lượng
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members DepartmentMember[]
+
+  @@unique([factoryId, code])
+  @@map("departments")
+}
+
+// Thành viên Phòng ban — liên kết User và Department
+model DepartmentMember {
+  id           String     @id @default(cuid())
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isHead       Boolean    @default(false) // true = Trưởng phòng ban
+  createdAt    DateTime   @default(now())
+
+  @@unique([departmentId, userId])
+  @@map("department_members")
+}
+
+// Danh mục dùng chung cho Khu vực/Xưởng, Chuyền, Tổ — Admin quản lý trước.
+model Category {
+  id        String       @id @default(cuid())
+  type      CategoryType
+  name      String
+  colorHex  String?
+  order     Int          @default(0)
+  createdAt DateTime     @default(now())
+
+  factoryId String?
+  factory   Factory? @relation(fields: [factoryId], references: [id])
+
+  // Phân cấp: AREA (Khu vực/Xưởng) > PRODUCTION_LINE (Chuyền) > TEAM (Tổ).
+  parentAreaId String?
+  parentArea   Category?  @relation("CategoryParentArea", fields: [parentAreaId], references: [id])
+  childrenByArea Category[] @relation("CategoryParentArea")
+
+  parentLineId String?
+  parentLine   Category?  @relation("CategoryParentLine", fields: [parentLineId], references: [id])
+  childrenByLine Category[] @relation("CategoryParentLine")
+
+  usersByArea             User[]         @relation("UserArea")
+  issuesByArea            QualityIssue[] @relation("IssueArea")
+  issuesByTeam            QualityIssue[] @relation("IssueTeam")
+  issuesByProductionLine  QualityIssue[] @relation("IssueProductionLine")
+
+  @@unique([type, name])
+  @@map("categories")
+}
+
+// Danh mục lỗi — người báo cáo chọn khi tạo phiếu, dùng để thống kê "Top 5 lỗi".
+model IssueFailureCategory {
+  id        String   @id @default(cuid())
+  name      String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  issues QualityIssue[]
+
+  @@map("issue_failure_categories")
+}
+
+// Danh mục linh kiện — bảo trì chọn khi điền form Hoàn thành.
+model PartCategory {
+  id        String   @id @default(cuid())
+  name      String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@map("part_categories")
+}
+
+model User {
+  id                 String    @id @default(cuid())
+  employeeCode       String    @unique
+  name               String
+  phone              String?
+  passwordHash       String
+  displayPassword    String?
+  avatarUrl          String?
+  pushToken          String? // Expo push token của thiết bị đang đăng nhập gần nhất
+  role               Role      @default(OPERATOR)
+  mustChangePassword Boolean   @default(false)
+  passwordChangedAt  DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  factoryId String?
+  factory   Factory? @relation(fields: [factoryId], references: [id])
+
+  areaId String? // Khu vực/Xưởng phụ trách
+  area   Category? @relation("UserArea", fields: [areaId], references: [id])
+
+  departmentMemberships DepartmentMember[]
+  reportedIssues        QualityIssue[]          @relation("Reporter")
+  rootCauseDecisions    QualityIssue[]          @relation("RootCauseDecidedBy")
+  fiveMOneESubmissions  FiveMOneESubmission[]
+  assignedTasks         MaintenanceTask[]       @relation("TaskAssignedBy")
+  assigneeTasks         MaintenanceTask[]       @relation("TaskAssignee")
+  verifiedTasks         MaintenanceTask[]       @relation("TaskVerifiedBy")
+  auditLogs             AuditLog[]
+  notifications         Notification[]
+
+  @@map("users")
+}
+
+enum IssueStatus {
+  REPORTED // Vừa báo cáo, chờ 3 role điều tra
+  INVESTIGATING // Đang nộp/đã nộp 5M+1E, chờ chốt nguyên nhân gốc
+  ROOT_CAUSE_FOUND // Đã chốt nguyên nhân gốc, chờ Trưởng phòng ban giao việc
+  ASSIGNED // Đã giao việc cho bảo trì, chờ nhận
+  IN_PROGRESS // Bảo trì đã nhận việc, đang sửa
+  DONE // Đã xác nhận hoàn thành (thủ công hoặc tự động sau 48h)
+}
+
+enum Severity {
+  LOW // Thấp
+  MEDIUM // Trung bình
+  HIGH // Cao
+  URGENT // Khẩn cấp
+}
+
+model QualityIssue {
+  id          String      @id @default(cuid())
+  reporter    User        @relation("Reporter", fields: [reporterId], references: [id])
+  reporterId  String
+  description String
+  images      String? // JSON array đường dẫn ảnh
+  poCode      String // Mã PO — text tự do, nhập tay
+  status      IssueStatus @default(REPORTED)
+  severity    Severity    @default(MEDIUM)
+
+  factoryId String?
+  factory   Factory? @relation(fields: [factoryId], references: [id])
+
+  areaId String?
+  area   Category? @relation("IssueArea", fields: [areaId], references: [id])
+
+  teamId String?
+  team   Category? @relation("IssueTeam", fields: [teamId], references: [id])
+
+  productionLineId String?
+  productionLine   Category? @relation("IssueProductionLine", fields: [productionLineId], references: [id])
+
+  failureCategoryId String?
+  failureCategory   IssueFailureCategory? @relation(fields: [failureCategoryId], references: [id])
+  otherFailureNote   String? // Khi người báo cáo chọn "Khác" ở danh mục lỗi — mô tả bắt buộc
+
+  investigationDeadline DateTime? // createdAt + 15 phút — hạn nộp 5M+1E
+  investigationLocked   Boolean   @default(false) // true khi hết 15p mà còn thiếu bản nộp
+  rootCause             String?
+  solution               String?
+  rootCauseDecidedBy   User?     @relation("RootCauseDecidedBy", fields: [rootCauseDecidedById], references: [id])
+  rootCauseDecidedById String?
+  rootCauseDecidedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  submissions   FiveMOneESubmission[]
+  task          MaintenanceTask?
+  auditLogs     AuditLog[]
+  notifications Notification[]
+
+  @@map("quality_issues")
+}
+
+enum SubmitterRole {
+  QA
+  LINE_LEADER
+  TECHNOLOGY
+}
+
+// 1 bản điều tra 5M+1E — mỗi người trong 3 role QA/Trưởng line/Công nghệ nộp riêng 1 bản/phiếu.
+model FiveMOneESubmission {
+  id            String        @id @default(cuid())
+  issue         QualityIssue  @relation(fields: [issueId], references: [id])
+  issueId       String
+  submitter     User          @relation(fields: [submitterId], references: [id])
+  submitterId   String
+  submitterRole SubmitterRole
+  poCode        String
+  images        String? // JSON array đường dẫn ảnh
+
+  man         String
+  machine     String
+  material    String
+  method      String
+  measurement String
+  environment String
+  rootCause   String @default("") // Kết luận nguyên nhân gốc rễ riêng của người này
+
+  submittedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([issueId, submitterId])
+  @@map("five_m_one_e_submissions")
+}
+
+enum TaskStatus {
+  PENDING // Vừa giao, chưa ai nhận
+  ACCEPTED // Bảo trì đã nhận việc
+  DONE // Bảo trì đã bấm Hoàn thành, chờ Trưởng line xác nhận
+}
+
+enum VerifyStatus {
+  PENDING // Chưa đến lúc/chưa xác nhận
+  CONFIRMED_DONE // Trưởng line xác nhận Đã hoàn thành (hoặc tự động sau 48h)
+  REJECTED // Trưởng line bấm Chưa hoàn thành — phiếu quay lại INVESTIGATING
+}
+
+model MaintenanceTask {
+  id           String     @id @default(cuid())
+  issue        QualityIssue @relation(fields: [issueId], references: [id])
+  issueId      String     @unique
+  assignedBy   User       @relation("TaskAssignedBy", fields: [assignedById], references: [id])
+  assignedById String
+  assignee     User       @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  assigneeId   String
+  status       TaskStatus @default(PENDING)
+  acceptedAt   DateTime?
+  completedAt  DateTime?
+
+  repairDetail   String?
+  partsReplaced  String? // JSON array [{ partCategoryId, quantity, note? }]
+  imagesBefore   String? // JSON array đường dẫn ảnh
+  imagesAfter    String? // JSON array đường dẫn ảnh
+
+  monitoringStartedAt DateTime?
+  verifyDeadline        DateTime? // monitoringStartedAt + 48h
+  lastVerifyPingAt      DateTime?
+  verifiedStatus         VerifyStatus @default(PENDING)
+  verifiedAt             DateTime?
+  verifiedBy             User?        @relation("TaskVerifiedBy", fields: [verifiedById], references: [id])
+  verifiedById            String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("maintenance_tasks")
+}
+
+enum AuditAction {
+  REPORTED
+  INVESTIGATION_SUBMITTED
+  ROOT_CAUSE_DECIDED
+  SOS_SENT
+  TASK_ASSIGNED
+  TASK_ACCEPTED
+  REPAIR_COMPLETED
+  REPAIR_CONFIRMED
+  ISSUE_CLOSED
+  ISSUE_REOPENED
+}
+
+// Bảng Nhật ký kiểm toán — lưu vết mọi hành động và chuyển trạng thái của sự cố
+model AuditLog {
+  id        String       @id @default(cuid())
+  issueId   String
+  issue     QualityIssue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?        @relation(fields: [userId], references: [id])
+  action    AuditAction
+  oldStatus IssueStatus?
+  newStatus IssueStatus?
+  note      String?
+  createdAt DateTime     @default(now())
+
+  @@map("audit_logs")
+}
+
+// Bảng Thông báo — lưu vết thông báo trong database có trạng thái đã đọc
+model Notification {
+  id        String        @id @default(cuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  issueId   String?
+  issue     QualityIssue? @relation(fields: [issueId], references: [id], onDelete: SetNull)
+  title     String
+  message   String
+  kind      String        // NEED_INVESTIGATE, FYI_REPORTED, TASK_ASSIGNED, ISSUE_RESOLVED...
+  isRead    Boolean       @default(false)
+  readAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  @@map("notifications")
+}

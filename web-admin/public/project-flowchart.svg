@@ -1,0 +1,132 @@
+<svg viewBox="0 0 1200 1600" xmlns="http://www.w3.org/2000/svg" style="background: #1a1a1a;">
+  <defs>
+    <style>
+      .box { fill: #2a2a2a; stroke: #4a9d6f; stroke-width: 2; }
+      .text { fill: #e0e0e0; font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .title { fill: #4a9d6f; font-weight: bold; font-size: 13px; }
+      .arrow { stroke: #4a9d6f; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .label { fill: #888; font-size: 11px; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#4a9d6f"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="30" class="text" style="font-size: 18px; fill: #4a9d6f; font-weight: bold;">Quy Trình Xử Lý Đơn Hàng / Yêu Cầu</text>
+
+  <!-- Bước 1: Báo cáo sự cố -->
+  <rect x="430" y="60" width="340" height="80" class="box" rx="5"/>
+  <text x="600" y="85" class="text title">Bước 1: Báo cáo sự cố</text>
+  <text x="600" y="105" class="text">15 phút, Báo QA/LL/CH +</text>
+  <text x="600" y="120" class="text">SX, FYI</text>
+
+  <!-- Arrow down -->
+  <path d="M 600 140 L 600 180" class="arrow"/>
+
+  <!-- Bước 2: QA + LL + CH điều tra -->
+  <rect x="430" y="180" width="340" height="80" class="box" rx="5"/>
+  <text x="600" y="205" class="text title">Bước 2: QA + LL + CH điều tra</text>
+  <text x="600" y="225" class="text">độc lập 15phút 5 Whys tương</text>
+  <text x="600" y="240" class="text">tác từng câu</text>
+
+  <!-- Split: Arrow left and right -->
+  <path d="M 530 260 L 280 280" class="arrow"/>
+  <path d="M 670 260 L 920 280" class="arrow"/>
+  
+  <text x="380" y="270" class="label">Đủ 2/3 form trong 15p</text>
+  <text x="820" y="270" class="label">Thiếu form lúc hết 15p</text>
+
+  <!-- LEFT BRANCH: Đủ 2/3 form -->
+  <!-- Bước 3: LL tổng hợp nguyên nhân -->
+  <rect x="100" y="280" width="360" height="80" class="box" rx="5"/>
+  <text x="280" y="305" class="text title">Bước 3: LL tổng hợp</text>
+  <text x="280" y="325" class="text">nguyên nhân & giải pháp</text>
+
+  <!-- Arrow down from Bước 3 -->
+  <path d="M 220 360 L 180 410" class="arrow"/>
+  <path d="M 340 360 L 380 410" class="arrow"/>
+  
+  <text x="170" y="390" class="label">Không thể xử tự</text>
+  <text x="400" y="390" class="label">Có giải pháp</text>
+
+  <!-- Phase 2: Báo Ban Giám đốc -->
+  <rect x="50" y="410" width="260" height="100" class="box" rx="5"/>
+  <text x="180" y="435" class="text title">Phase 2: Báo Ban Giám đốc</text>
+  <text x="180" y="455" class="text">GD/TGĐNNN hình nộng +</text>
+  <text x="180" y="470" class="text">chi chủ + Xử lý</text>
+
+  <!-- RIGHT BRANCH: Thiếu form -->
+  <!-- Bước 4: TP chọn phương ban -->
+  <rect x="750" y="280" width="340" height="80" class="box" rx="5"/>
+  <text x="920" y="305" class="text title">Bước 4: TP chọn phương ban</text>
+  <text x="920" y="325" class="text">& giao nhân viên cùng khu</text>
+  <text x="920" y="340" class="text">vực</text>
+
+  <!-- Arrow down -->
+  <path d="M 920 360 L 920 420" class="arrow"/>
+
+  <!-- Bước 5: Nhân viên phòng ban -->
+  <rect x="750" y="420" width="340" height="100" class="box" rx="5"/>
+  <text x="920" y="445" class="text title">Bước 5: Nhân viên phòng</text>
+  <text x="920" y="465" class="text">ban nhận việc/Đề xuất xử lý,</text>
+  <text x="920" y="480" class="text">1 người/1 việc</text>
+
+  <!-- Arrow down -->
+  <path d="M 920 520 L 920 580" class="arrow"/>
+
+  <!-- Bước 6: Hoàn thành sửa -->
+  <rect x="750" y="580" width="340" height="100" class="box" rx="5"/>
+  <text x="920" y="605" class="text title">Bước 6: Hoàn thành sửa</text>
+  <text x="920" y="625" class="text">chiDÁNO tại, tính khoản nhiều</text>
+  <text x="920" y="640" class="text">dòng, sinh trước/sau</text>
+
+  <!-- Arrow with loop -->
+  <path d="M 920 680 L 920 720 L 1000 720 L 1000 680" class="arrow" stroke-dasharray="5,5"/>
+  <text x="1050" y="705" class="label">Chưa xong</text>
+
+  <!-- Bước 7: LL xác nhận Xong/Chưa xong -->
+  <rect x="750" y="740" width="340" height="100" class="box" rx="5"/>
+  <text x="920" y="765" class="text title">Bước 7a: LL xác nhận Xong</text>
+  <text x="920" y="785" class="text">/ Chưa xong</text>
+
+  <!-- Arrow down with loop indicator -->
+  <path d="M 750 780 L 650 780 L 650 680 L 750 680" class="arrow" stroke-dasharray="5,5"/>
+  <text x="680" y="740" class="label">Xong</text>
+
+  <!-- Arrow down to Bước 7b -->
+  <path d="M 920 840 L 920 900" class="arrow"/>
+
+  <!-- Bước 7b: Theo dõi 3h - 48h -->
+  <rect x="650" y="900" width="540" height="80" class="box" rx="5"/>
+  <text x="920" y="925" class="text title">Bước 7b: Theo dõi 3h - 48h</text>
+  <text x="920" y="945" class="text">(Thời gian tuỳ theo độ ưu tiên)</text>
+
+  <!-- Split at bottom -->
+  <path d="M 800 980 L 500 1050" class="arrow"/>
+  <path d="M 1040 980 L 1340 1050" class="arrow"/>
+  
+  <text x="620" y="1020" class="label">Sau 3h - 48h: Xác Đông</text>
+  <text x="1160" y="1020" class="label">Quá 48h không bắm gì</text>
+
+  <!-- Left outcome: Đã hoàn thành -->
+  <rect x="320" y="1050" width="360" height="80" class="box" rx="5"/>
+  <text x="500" y="1075" class="text title">Đã hoàn thành -> Báo Ban</text>
+  <text x="500" y="1095" class="text">Giám đốc</text>
+
+  <!-- Right outcome: Tự động chuyển -->
+  <rect x="1120" y="1050" width="360" height="80" class="box" rx="5"/>
+  <text x="1300" y="1075" class="text title">Tự động dạng phiếu -> Báo</text>
+  <text x="1300" y="1095" class="text">Ban Giám đốc</text>
+
+  <!-- LEFT BRANCH BOTTOM: Bước 4 for no solution -->
+  <path d="M 380 510 L 380 1120" class="arrow" stroke-dasharray="5,5"/>
+  <text x="420" y="700" class="label">Kết nối lại với</text>
+  <text x="420" y="715" class="label">Bước 4 nếu cần</text>
+
+  <!-- Legend -->
+  <text x="50" y="1350" class="text" style="fill: #888; font-size: 11px; text-anchor: start;">Ghi chú:</text>
+  <text x="50" y="1370" class="text" style="fill: #888; font-size: 11px; text-anchor: start;">• Đường liền: Quy trình chính</text>
+  <text x="50" y="1390" class="text" style="fill: #888; font-size: 11px; text-anchor: start;">• Đường đứt: Vòng lặp hoặc điều kiện</text>
+  <text x="50" y="1410" class="text" style="fill: #888; font-size: 11px; text-anchor: start;">• Các bước phải hoàn thành tuần tự hoặc song song tuỳ theo điều kiện</text>
+</svg>
